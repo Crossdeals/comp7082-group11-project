@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/Crossdeals/comp7082-group11-project#readme",
   "dependencies": {
+    "body-parser": "^2.2.0",
     "dotenv": "^17.2.2",
     "express": "^5.1.0",
     "mongoose": "^8.18.1"
