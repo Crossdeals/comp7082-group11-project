@@ -1,12 +1,11 @@
 const express = require('express');
 const router = express.Router();
 const passport = require("passport");
-const LocalStrategy = require("passport-local").Strategy;
 const User = require('../models/UserModel');
 const bcrypt = require("bcrypt");
 
 // User registration route
-router.post("/register", async (req, res) => {
+router.post("/signup", async (req, res) => {
     console.log(req.body);
     const { username, password, confirmpassword } = req.body;
     if (!username && !password && !confirmpassword) {
@@ -42,54 +41,11 @@ router.post("/register", async (req, res) => {
     }
 });
 
-passport.use(
-    new LocalStrategy(async (username, password, done) => {
-        try {
-            // Find the user by username in the database
-            const query = { userName: username};
-            const user = await User.findOne(query);
-            // If the user does not exist, return an error
-            if (!user) {
-                return done(null, false, { error: "Incorrect username" });
-            }
-
-            // Compare the provided password with the 
-            // hashed password in the database
-            
-            const passwordsMatch = await bcrypt.compare(
-                password,
-                user.password
-            );
-            
-            // If the passwords match, return the user object
-            if (passwordsMatch) {
-                return done(null, user);
-            } else {
-                // If the passwords don't match, return an error
-                return done(null, false, { error: "Incorrect password" });
-            }
-        } catch (err) {
-            return done(err);
-        }
-    })
-);
-
-passport.serializeUser(function(user, cb) {
-  process.nextTick(function() {
-    cb(null, { id: user.id, username: user.username });
-  });
-});
-
-passport.deserializeUser(function(user, cb) {
-  process.nextTick(function() {
-    return cb(null, user);
-  });
-});
-
 router.post('/login', passport.authenticate('local', {
-  successRedirect: '/login-success',
-  failureRedirect: '/login-failure'
+  successRedirect: '/soon',
+  failureRedirect: '/login.html',
 }));
+
 
 router.post('/logout', function(req, res, next) {
   req.logout(function(err) {

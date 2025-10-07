@@ -6,7 +6,12 @@ const accountController = require('./controllers/accountController');
 const bodyParser = require('body-parser');
 const session = require('express-session');
 const passport = require('passport');
+const path = require('path');
+const localStrategy = require('./config/passport.js');
+const cookieParser = require("cookie-parser");
 
+require('dotenv').config();
+connectDB();
 app.use(
     session({
         secret: "Crossdeals",
@@ -14,15 +19,19 @@ app.use(
         saveUninitialized: false,
     })
 );
-app.use(passport.authenticate('session'));
-require('dotenv').config();
+app.use(cookieParser());
+
+
 app.use(express.json());
 app.use(bodyParser.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: true }));
+app.use(passport.initialize());
+app.use(passport.session());
 
-connectDB();
 
 app.use("/", accountRoute);
 app.use("/", accountController);
+
+app.use(express.static(path.join(__dirname, '..', 'crossdeals-frontend')));
 
 module.exports = app;
