@@ -11,11 +11,11 @@ router.get("/", (req, res) => {
     res.sendFile(path.join(frontendPath,'login.html'));
 });
 
-router.get("/login.html", (req, res) => {
+router.get("/login", (req, res) => {
     res.sendFile(path.join(frontendPath,'login.html'));
 });
 
-router.get("/signup.html", (req, res) => {
+router.get("/signup", (req, res) => {
     res.sendFile(path.join(frontendPath,'signup.html'));
 });
 

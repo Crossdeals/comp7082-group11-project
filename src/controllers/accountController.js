@@ -35,7 +35,7 @@ router.post("/signup", async (req, res) => {
         const newUser = new User({ userName: username, password: hashedPassword });
         await newUser.save();
 
-        return res.redirect("/account-created");
+        return res.redirect("/soon");
     } catch (err) {
         return res.status(500).json({ message: err.message });
     }
@@ -43,7 +43,7 @@ router.post("/signup", async (req, res) => {
 
 router.post('/login', passport.authenticate('local', {
   successRedirect: '/soon',
-  failureRedirect: '/login.html',
+  failureRedirect: '/login',
 }));
 
 
