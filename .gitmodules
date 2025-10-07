@@ -1,0 +1,3 @@
+[submodule "crossdeals-frontend"]
+	path = crossdeals-frontend
+	url = https://github.com/Crossdeals/crossdeals-frontend.git
