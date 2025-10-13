@@ -8,16 +8,11 @@ const jwtHandler = require('../util/jwtHandler');
 // User registration route
 router.post("/signup", async (req, res) => {
     console.log(req.body);
-    const { username, password, confirmpassword } = req.body;
-    if (!username && !password && !confirmpassword) {
+    const { username, password } = req.body;
+    if (!username && !password) {
         return res
             .status(403)
             .send("register all fields required");
-    }
-    if (confirmpassword !== password) {
-        return res
-            .status(403)
-            .send("register Password do not match");
     }
     try {
         // Check if user already exists
@@ -36,6 +31,7 @@ router.post("/signup", async (req, res) => {
         const newUser = new User({ userName: username, password: hashedPassword });
         await newUser.save();
 
+        // Login the user
         const token = jwtHandler.getToken(username)
         res.cookie('token', token, {
           httpOnly: true,
@@ -62,6 +58,8 @@ router.post('/login', async (req, res) => {
 
   if (existingUser) {
     const passwordEncrypted = existingUser.password;
+    console.log(`entered  [${req.body.password}]`);
+    console.log(`password [${passwordEncrypted}]`);
     bcrypt.compare(req.body.password, passwordEncrypted, (success) => {
       if (success) {
         const token = jwtHandler.getToken(existingUser.userName);
