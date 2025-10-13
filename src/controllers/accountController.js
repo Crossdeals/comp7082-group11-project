@@ -3,6 +3,7 @@ const router = express.Router();
 const passport = require("passport");
 const User = require('../models/UserModel');
 const bcrypt = require("bcrypt");
+const jwtHandler = require('../util/jwtHandler');
 
 // User registration route
 router.post("/signup", async (req, res) => {
@@ -35,17 +36,53 @@ router.post("/signup", async (req, res) => {
         const newUser = new User({ userName: username, password: hashedPassword });
         await newUser.save();
 
-        return res.redirect("/soon");
+        const token = jwtHandler.getToken(username)
+        res.cookie('token', token, {
+          httpOnly: true,
+          maxAge: 2.16e7
+        })
+        res.status(200);
+        res.send("User created");
     } catch (err) {
         return res.status(500).json({ message: err.message });
     }
 });
 
+/*
 router.post('/login', passport.authenticate('local', {
   successRedirect: '/soon',
   failureRedirect: '/login',
 }));
+*/
 
+// TODO: Remove the body error message for security
+router.post('/login', async (req, res) => {
+  const username = req.body.username;
+  const existingUser = await User.findOne({ userName: username });
+
+  if (existingUser) {
+    const passwordEncrypted = existingUser.password;
+    bcrypt.compare(req.body.password, passwordEncrypted, (success) => {
+      if (success) {
+        const token = jwtHandler.getToken(existingUser.userName);
+        res.cookie('token', token, {
+          httpOnly: true,
+          maxAge: 2.16e7
+        })
+        res.status(200);
+        res.send("Login ok");
+      }
+      else {
+        res.status(403);
+        res.send("Password does not match");
+      }
+    });
+  }
+  else {
+    res.status(403);
+    res.send("User does not exist");
+  }
+});
 
 router.post('/logout', function(req, res, next) {
   req.logout(function(err) {
