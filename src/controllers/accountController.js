@@ -60,7 +60,11 @@ router.post('/login', async (req, res) => {
     const passwordEncrypted = existingUser.password;
     console.log(`entered  [${req.body.password}]`);
     console.log(`password [${passwordEncrypted}]`);
-    bcrypt.compare(req.body.password, passwordEncrypted, (success) => {
+    bcrypt.compare(req.body.password, passwordEncrypted, (err, success) => {
+      if (err) {
+        res.status(500);
+        res.send("Password comparison error");
+      }
       if (success) {
         const token = jwtHandler.getToken(existingUser.userName);
         res.cookie('token', token, {
