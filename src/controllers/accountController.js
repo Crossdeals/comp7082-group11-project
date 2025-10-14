@@ -12,7 +12,7 @@ router.post("/signup", async (req, res) => {
     if (!username && !password) {
         return res
             .status(403)
-            .send("register all fields required");
+            .json({ message: "Missing username or password"});
     }
     try {
         // Check if user already exists
@@ -20,7 +20,7 @@ router.post("/signup", async (req, res) => {
         if (existingUser) {
             return res
                 .status(409)
-                .send("register Username already exists");
+                .json({ message: "User already exists" });
         }
 
         // Hash the password before saving it to the database
@@ -38,7 +38,7 @@ router.post("/signup", async (req, res) => {
           maxAge: 2.16e7
         })
         res.status(200);
-        res.send("User created");
+        res.json({ message: "User created" });
     } catch (err) {
         return res.status(500).json({ message: err.message });
     }
@@ -61,7 +61,7 @@ router.post('/login', async (req, res) => {
     bcrypt.compare(req.body.password, passwordEncrypted, (err, success) => {
       if (err) {
         res.status(500);
-        res.send("Password comparison error");
+        res.json({ message: "Password comparison error" });
       }
       if (success) {
         const token = jwtHandler.getToken(existingUser.userName);
@@ -70,17 +70,17 @@ router.post('/login', async (req, res) => {
           maxAge: 2.16e7
         })
         res.status(200);
-        res.send({ message: "Login ok" });
+        res.json({ message: "Login ok" });
       }
       else {
         res.status(403);
-        res.send("Password does not match");
+        res.json({ message: "Password does not match" });
       }
     });
   }
   else {
     res.status(403);
-    res.send("User does not exist");
+    res.json({ message: "User does not exist" });
   }
 });
 
@@ -93,19 +93,21 @@ router.post('/username', function (req, res, next) {
 
   if (verified) {
     res.status(200);
-    res.send({ username: usernameVerified });
+    res.json({ username: usernameVerified });
   }
   else {
     res.status(403);
-    res.send("Token verification failed");
+    res.json({ message: "Token verification failed" });
   }
 });
 
-router.post('/logout', function(req, res, next) {
-  req.logout(function(err) {
-    if (err) { return next(err); }
-    res.redirect('/');
-  });
+router.get('/logout', function(req, res, next) {
+  res.cookie('token', '', {
+    httpOnly: true,
+    maxAge: 0
+  })
+  res.status(200);
+  res.json({ message: "Log out successful" });
 });
 
 module.exports = router;
