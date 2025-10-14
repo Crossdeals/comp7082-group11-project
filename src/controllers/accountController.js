@@ -70,7 +70,7 @@ router.post('/login', async (req, res) => {
           maxAge: 2.16e7
         })
         res.status(200);
-        res.send("Login ok");
+        res.send({ message: "Login ok" });
       }
       else {
         res.status(403);
@@ -81,6 +81,23 @@ router.post('/login', async (req, res) => {
   else {
     res.status(403);
     res.send("User does not exist");
+  }
+});
+
+router.post('/username', function (req, res, next) {
+  const username = req.body.username;
+  let token = req.headers.cookie;
+  token = token.split('=')[1];
+  const verified = jwtHandler.verifyToken(username, token);
+  let usernameVerified = verified.username;
+
+  if (verified) {
+    res.status(200);
+    res.send({ username: usernameVerified });
+  }
+  else {
+    res.status(403);
+    res.send("Token verification failed");
   }
 });
 

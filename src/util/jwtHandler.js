@@ -2,8 +2,7 @@ const jwt = require('jsonwebtoken');
 
 
 exports.getToken = function (username) {
-    let secretKey = process.env.SECRET_KEY;
-    console.log(secretKey);
+    const secretKey = process.env.SECRET_KEY;
     const token = jwt.sign(
         { username: username },
         secretKey,
@@ -14,8 +13,9 @@ exports.getToken = function (username) {
 }
 
 exports.verifyToken = function (username, token) {
+    const secretKey = process.env.SECRET_KEY;
+
     try {
-        token = token.split(' ')[1];
         const decoded = jwt.verify(token, secretKey);
         if (!decoded || !decoded.username || decoded.username !== username) {
             return null;
@@ -26,6 +26,7 @@ exports.verifyToken = function (username, token) {
         if (error instanceof jwt.TokenExpiredError) {
             return null;
         }
+        console.log(error);
         return null;
     }
 }
