@@ -1,6 +1,5 @@
 const express = require('express');
 const router = express.Router();
-const passport = require("passport");
 const User = require('../models/UserModel');
 const bcrypt = require("bcrypt");
 const jwtHandler = require('../util/jwtHandler');
@@ -43,13 +42,6 @@ router.post("/signup", async (req, res) => {
         return res.status(500).json({ message: err.message });
     }
 });
-
-/*
-router.post('/login', passport.authenticate('local', {
-  successRedirect: '/soon',
-  failureRedirect: '/login',
-}));
-*/
 
 // TODO: Remove the body error message for security
 router.post('/login', async (req, res) => {
