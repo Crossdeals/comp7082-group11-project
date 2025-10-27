@@ -11,7 +11,7 @@ router.post("/signup", async (req, res) => {
     if (!username && !password) {
         return res
             .status(403)
-            .json({ message: "Missing username or password"});
+            .json({ message: "Missing username or password" });
     }
     try {
         // Check if user already exists
@@ -33,8 +33,8 @@ router.post("/signup", async (req, res) => {
         // Login the user
         const token = jwtHandler.getToken(username)
         res.cookie('token', token, {
-          httpOnly: true,
-          maxAge: 2.16e7
+            httpOnly: true,
+            maxAge: 2.16e7
         })
         res.status(200);
         res.json({ message: "User created" });
@@ -45,61 +45,61 @@ router.post("/signup", async (req, res) => {
 
 // TODO: Remove the body error message for security
 router.post('/login', async (req, res) => {
-  const username = req.body.username;
-  const existingUser = await User.findOne({ userName: username });
+    const username = req.body.username;
+    const existingUser = await User.findOne({ userName: username });
 
-  if (existingUser) {
-    const passwordEncrypted = existingUser.password;
-    bcrypt.compare(req.body.password, passwordEncrypted, (err, success) => {
-      if (err) {
-        res.status(500);
-        res.json({ message: "Password comparison error" });
-      }
-      if (success) {
-        const token = jwtHandler.getToken(existingUser.userName);
-        res.cookie('token', token, {
-          httpOnly: true,
-          maxAge: 2.16e7
-        })
-        res.status(200);
-        res.json({ message: "Login ok" });
-      }
-      else {
+    if (existingUser) {
+        const passwordEncrypted = existingUser.password;
+        bcrypt.compare(req.body.password, passwordEncrypted, (err, success) => {
+            if (err) {
+                res.status(500);
+                res.json({ message: "Password comparison error" });
+            }
+            if (success) {
+                const token = jwtHandler.getToken(existingUser.userName);
+                res.cookie('token', token, {
+                    httpOnly: true,
+                    maxAge: 2.16e7
+                })
+                res.status(200);
+                res.json({ message: "Login ok" });
+            }
+            else {
+                res.status(403);
+                res.json({ message: "Password does not match" });
+            }
+        });
+    }
+    else {
         res.status(403);
-        res.json({ message: "Password does not match" });
-      }
-    });
-  }
-  else {
-    res.status(403);
-    res.json({ message: "User does not exist" });
-  }
+        res.json({ message: "User does not exist" });
+    }
 });
 
 router.post('/username', function (req, res, next) {
-  const username = req.body.username;
-  let token = req.headers.cookie;
-  token = token.split('=')[1];
-  const verified = jwtHandler.verifyToken(username, token);
-  let usernameVerified = verified.username;
+    const username = req.body.username;
+    let token = req.headers.cookie;
+    token = token.split('=')[1];
+    const verified = jwtHandler.verifyToken(username, token);
+    let usernameVerified = verified.username;
 
-  if (verified) {
-    res.status(200);
-    res.json({ username: usernameVerified });
-  }
-  else {
-    res.status(403);
-    res.json({ message: "Token verification failed" });
-  }
+    if (verified) {
+        res.status(200);
+        res.json({ username: usernameVerified });
+    }
+    else {
+        res.status(403);
+        res.json({ message: "Token verification failed" });
+    }
 });
 
-router.get('/logout', function(req, res, next) {
-  res.cookie('token', '', {
-    httpOnly: true,
-    maxAge: 0
-  })
-  res.status(200);
-  res.json({ message: "Log out successful" });
+router.get('/logout', function (req, res, next) {
+    res.cookie('token', '', {
+        httpOnly: true,
+        maxAge: 0
+    })
+    res.status(200);
+    res.json({ message: "Log out successful" });
 });
 
 module.exports = router;
