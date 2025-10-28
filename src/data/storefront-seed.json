@@ -1,0 +1,12 @@
+[
+    {
+        "url": "www.sonystore.com",
+        "name": "Sony Store",
+        "platforms": ["ps5"]
+    },
+    {
+        "url": "www.xbox.com",
+        "name": "Xbox Store",
+        "platforms": ["xbox series x|s"]
+    }
+]
