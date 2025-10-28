@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36" version="28.2.5" pages="5">
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36" version="28.2.7" pages="5">
   <diagram id="ImoOxc1JO1wxnwPMC0eJ" name="Component">
     <mxGraphModel dx="1042" dy="562" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
       <root>
@@ -60,8 +60,8 @@
         <mxCell id="3XzFGxr-biG4mYpELUGO-1" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;VideoGame&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;- title : string&lt;/p&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ getDealInformation() : DealInformation[]&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ validateDealInfo() : void&amp;nbsp;&lt;/p&gt;" style="verticalAlign=top;align=left;overflow=fill;html=1;whiteSpace=wrap;" parent="1" vertex="1">
           <mxGeometry x="460" y="135" width="240" height="150" as="geometry" />
         </mxCell>
-        <mxCell id="3XzFGxr-biG4mYpELUGO-2" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;User&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;- username : string&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;- password : string&lt;/p&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ getWishList() :&amp;nbsp; Wishlist&lt;/p&gt;" style="verticalAlign=top;align=left;overflow=fill;html=1;whiteSpace=wrap;" parent="1" vertex="1">
-          <mxGeometry x="135" y="400" width="180" height="110" as="geometry" />
+        <mxCell id="3XzFGxr-biG4mYpELUGO-2" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;User&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;- username : string&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;- password : string&lt;/p&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ getWishList() :&amp;nbsp; Wishlist&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ getPreferredStores() : Storefront[]&lt;/p&gt;" style="verticalAlign=top;align=left;overflow=fill;html=1;whiteSpace=wrap;" parent="1" vertex="1">
+          <mxGeometry x="120" y="400" width="210" height="110" as="geometry" />
         </mxCell>
         <mxCell id="3XzFGxr-biG4mYpELUGO-3" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;Wishlist&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ field: Type&lt;/p&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ addVideoGame(string) : void&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ removeVideoGame(string) : void&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ getVideoGames() : VideoGame[]&lt;/p&gt;" style="verticalAlign=top;align=left;overflow=fill;html=1;whiteSpace=wrap;" parent="1" vertex="1">
           <mxGeometry x="120" y="130" width="210" height="160" as="geometry" />
@@ -102,7 +102,7 @@
             <mxPoint x="12" as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="3XzFGxr-biG4mYpELUGO-15" value="1..*" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="3XzFGxr-biG4mYpELUGO-13" vertex="1" connectable="0">
+        <mxCell id="3XzFGxr-biG4mYpELUGO-15" value="0..*" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="3XzFGxr-biG4mYpELUGO-13" vertex="1" connectable="0">
           <mxGeometry x="-0.8632" y="1" relative="1" as="geometry">
             <mxPoint x="14" y="-27" as="offset" />
           </mxGeometry>
@@ -131,12 +131,12 @@
         </mxCell>
         <mxCell id="3XzFGxr-biG4mYpELUGO-20" value="1" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="3XzFGxr-biG4mYpELUGO-19" vertex="1" connectable="0">
           <mxGeometry x="0.5569" y="-3" relative="1" as="geometry">
-            <mxPoint as="offset" />
+            <mxPoint x="1" y="-7" as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="3XzFGxr-biG4mYpELUGO-21" value="1..*" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="3XzFGxr-biG4mYpELUGO-19" vertex="1" connectable="0">
+        <mxCell id="3XzFGxr-biG4mYpELUGO-21" value="0..*" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="3XzFGxr-biG4mYpELUGO-19" vertex="1" connectable="0">
           <mxGeometry x="-0.7662" y="-2" relative="1" as="geometry">
-            <mxPoint as="offset" />
+            <mxPoint x="-5" y="-8" as="offset" />
           </mxGeometry>
         </mxCell>
         <mxCell id="3XzFGxr-biG4mYpELUGO-22" value="" style="endArrow=diamondThin;endFill=1;endSize=24;html=1;rounded=0;entryX=0.75;entryY=1;entryDx=0;entryDy=0;exitX=0.5;exitY=0;exitDx=0;exitDy=0;" parent="1" source="3XzFGxr-biG4mYpELUGO-5" target="3XzFGxr-biG4mYpELUGO-1" edge="1">
@@ -150,7 +150,7 @@
             <mxPoint x="9" as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="3XzFGxr-biG4mYpELUGO-24" value="1..*" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="3XzFGxr-biG4mYpELUGO-22" vertex="1" connectable="0">
+        <mxCell id="3XzFGxr-biG4mYpELUGO-24" value="0..*" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="3XzFGxr-biG4mYpELUGO-22" vertex="1" connectable="0">
           <mxGeometry x="-0.6847" y="-2" relative="1" as="geometry">
             <mxPoint x="9" as="offset" />
           </mxGeometry>
