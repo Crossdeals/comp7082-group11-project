@@ -2,6 +2,19 @@ const express = require('express');
 const router = express.Router();
 const User = require('../models/UserModel');
 const jwtHandler = require('../util/jwtHandler');
+const Wishlist = require('../models/WishlistModel');
+const Storefront = require('../models/StorefrontModel');
+
+// TODO: move Wishlist creation outside of account creation aftering asking for store preferences
+async function createWishList(user){
+    try {
+        const storeIds = await Storefront.distinct('_id');
+        const wishList = await Wishlist.create({ preferredStores: storeIds });
+        user.wishlist = wishList._id;
+    } catch(error) {
+        throw error;
+    }
+}
 
 // User registration route
 router.post("/signup", async (req, res) => {
@@ -20,9 +33,9 @@ router.post("/signup", async (req, res) => {
                 .status(409)
                 .json({ message: "User already exists" });
         }
-
         // Create and save the new user
         const newUser = new User({ userName: username, password: password });
+        await createWishList(newUser);
         await newUser.save();
 
         // Login the user
