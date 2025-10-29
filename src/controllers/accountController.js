@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const User = require('../models/UserModel');
-const bcrypt = require("bcrypt");
 const jwtHandler = require('../util/jwtHandler');
 
 // User registration route
@@ -22,12 +21,8 @@ router.post("/signup", async (req, res) => {
                 .json({ message: "User already exists" });
         }
 
-        // Hash the password before saving it to the database
-        const salt = await bcrypt.genSalt(15);
-        const hashedPassword = await bcrypt.hash(password, salt);
-
         // Create and save the new user
-        const newUser = new User({ userName: username, password: hashedPassword });
+        const newUser = new User({ userName: username, password: password });
         await newUser.save();
 
         // Login the user
@@ -49,8 +44,7 @@ router.post('/login', async (req, res) => {
     const existingUser = await User.findOne({ userName: username });
 
     if (existingUser) {
-        const passwordEncrypted = existingUser.password;
-        bcrypt.compare(req.body.password, passwordEncrypted, (err, success) => {
+        existingUser.comparePassword(req.body.password, (err, success) => {
             if (err) {
                 res.status(500);
                 res.json({ message: "Password comparison error" });
