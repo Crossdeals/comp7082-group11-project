@@ -4,9 +4,11 @@ const connectDB = require('./config/db');
 const accountController = require('./controllers/accountController');
 const bodyParser = require('body-parser');
 const cookieParser = require("cookie-parser");
+const StorefrontSeeder = require('./util/storefrontSeeder');
 
 require('dotenv').config();
 connectDB();
+StorefrontSeeder();
 app.use(cookieParser());
 
 const allowHeaders = (req, res, next) => {
