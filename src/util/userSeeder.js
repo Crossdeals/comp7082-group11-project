@@ -21,11 +21,8 @@ seedData = [
     }
 ];
 
-require('dotenv').config();
-
 const seedUsers = async () => {
     try {
-        connectDB();
         const storeIds = await Storefront.distinct('_id');
         if(storeIds.length == 0) {
             throw new Error("no stores");
@@ -44,13 +41,22 @@ const seedUsers = async () => {
             const wishList = await Wishlist.create({ preferredStores: storeIds });
             newUser.wishlist = wishList._id;
             await newUser.save();
+
+            for await( const game of VideoGame.find()) {
+                console.log("adding game" + game.title);
+                await Wishlist.updateOne({ _id: wishList._id },
+                    {
+                        '$push': {
+                            games: game._id
+                        }
+                    }
+                );
+            }
         }
     
     } catch(error) {
         console.error(`Error: ${error.message}`);
-    } finally {
-        mongoose.connection.close();
     }
 }
 
-seedUsers();
+module.exports = seedUsers;

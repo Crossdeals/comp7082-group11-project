@@ -1,5 +1,3 @@
-const connectDB = require('../config/db');
-const mongoose = require('mongoose');
 const Storefront = require('../models/StorefrontModel');
 const VideoGame = require('../models/VideoGameModel');
 
@@ -28,11 +26,8 @@ const seedData = [
     }
 ];
 
-require('dotenv').config();
-
 const seedVideoGames = async () => {
     try {
-        connectDB();
         const store = await Storefront.findOne({});
         if(!store) {
             throw new Error("No storefront found, please seed the Storefront document");
@@ -59,10 +54,8 @@ const seedVideoGames = async () => {
     }
     } catch(error) {
         console.error(`Error: ${error.message}`);
-    } finally {
-        mongoose.connection.close();
     }
 }
 
-seedVideoGames();
+module.exports = seedVideoGames;
 

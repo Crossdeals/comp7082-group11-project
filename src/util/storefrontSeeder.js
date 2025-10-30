@@ -1,11 +1,7 @@
-const connectDB = require('../config/db');
+
 const fs = require('fs');
-const mongoose = require('mongoose');
 const path = require('path');
 const Storefront = require('../models/StorefrontModel');
-
-require('dotenv').config();
-connectDB();
 
 const seedStorefront = async () => {
     try {
@@ -26,9 +22,7 @@ const seedStorefront = async () => {
         }
     } catch(error) {
         console.error(`Error: ${error.message}`);
-    } finally {
-        mongoose.connection.close();
-    }
+    } 
 }
 
-seedStorefront();
+module.exports = seedStorefront;
