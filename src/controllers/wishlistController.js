@@ -7,7 +7,7 @@ const Wishlist = require('../models/WishlistModel');
 //router.use(jwt.authenticateUser);
 
 router.get("/index", async (req, res) => {
-    const userData = await User.findOne({ userName: req.body.user }).populate({
+    const userData = await User.findOne({ userName: req.body.username }).populate({
         path: 'wishlist',
         populate: {
             path: 'games', 
