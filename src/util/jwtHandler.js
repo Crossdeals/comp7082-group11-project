@@ -30,3 +30,19 @@ exports.verifyToken = function (username, token) {
         return null;
     }
 }
+
+// exports.authenticateUser = (req, res, next) =>{
+//     const username = req.body.username;
+//     let token = req.headers.cookie;
+//     token = token.split('=')[1];
+//     const verified = verifyToken(username, token);
+
+//     if (verified) {
+//         req.user = decoded; 
+//         next();
+//     }
+//     else {
+//         res.status(403);
+//         res.json({ message: "Token verification failed" });
+//     }
+// }
