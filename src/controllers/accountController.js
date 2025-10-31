@@ -68,8 +68,8 @@ router.post('/login', async (req, res) => {
                     httpOnly: true,
                     maxAge: 2.16e7
                 })
-                res.cookie('wishlist', existingUser.wishlist);
-                res.redirect('/wishlist/index');
+                res.status(200);
+                res.json({ message: "Login ok" });
             }
             else {
                 res.status(403);
