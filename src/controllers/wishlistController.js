@@ -22,4 +22,26 @@ router.get("/index", async (req, res) => {
     res.json(userData.wishlist.games);
 });
 
+router.delete("/remove/:id", async (req, res) => {
+    console.log("removing id " + req.params.id);
+    const gameId = req.params.id;
+    const username = req.body.username;
+    const user = await User.findOne({ userName: username });
+    const wishlist = await Wishlist.findById(user.wishlist);
+    if(!wishlist.games.includes(gameId)) {
+        res.status(404).send("Game not found");
+        return;
+    }
+    wishlist.games.pull(gameId);
+    wishlist.markModified('games');
+    const test = await wishlist.save();
+    console.log(test);
+    if(!wishlist.games.includes(gameId)) {
+        res.status(200).send("game removed");
+    }
+    else{
+        res.status(404).send("error");
+    }
+});
+
 module.exports = router;
