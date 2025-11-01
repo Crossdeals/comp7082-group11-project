@@ -7,7 +7,7 @@ const Wishlist = require('../models/WishlistModel');
 //router.use(jwt.authenticateUser);
 
 router.get("/index", async (req, res) => {
-    const userData = await User.findOne({ userName: req.body.username }).populate({
+    const userData = await User.findByUserName(req.body.username).populate({
         path: 'wishlist',
         populate: {
             path: 'games', 
@@ -25,7 +25,7 @@ router.get("/index", async (req, res) => {
 router.delete("/remove/:id", async (req, res) => {
     const gameId = req.params.id;
     const username = req.body.username;
-    const user = await User.findOne({ userName: username });
+    const user = await User.findByUserName(username);
     const wishlist = await Wishlist.findById(user.wishlist);
     if(!wishlist.games.includes(gameId)) {
         res.status(404).send("Game not found");
