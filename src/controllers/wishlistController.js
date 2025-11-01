@@ -23,7 +23,6 @@ router.get("/index", async (req, res) => {
 });
 
 router.delete("/remove/:id", async (req, res) => {
-    console.log("removing id " + req.params.id);
     const gameId = req.params.id;
     const username = req.body.username;
     const user = await User.findOne({ userName: username });
@@ -32,10 +31,10 @@ router.delete("/remove/:id", async (req, res) => {
         res.status(404).send("Game not found");
         return;
     }
+    console.log("removing id " + req.params.id);
     wishlist.games.pull(gameId);
     wishlist.markModified('games');
     const test = await wishlist.save();
-    console.log(test);
     if(!wishlist.games.includes(gameId)) {
         res.status(200).send("game removed");
     }
