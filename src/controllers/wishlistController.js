@@ -3,6 +3,7 @@ const jwt = require('../util/jwtHandler');
 const router = express.Router();
 const User = require('../models/UserModel');
 const Wishlist = require('../models/WishlistModel');
+const VideoGame = require('../models/VideoGameModel');
 
 //router.use(jwt.authenticateUser);
 
@@ -41,6 +42,29 @@ router.delete("/remove/:id", async (req, res) => {
     else{
         res.status(404).send("error");
     }
+});
+
+router.post("/add", async (req,res) => {
+    console.log("adding " + req.body.title);
+    const title = req.body.title;
+    const username = req.body.username;
+    const user = await User.findByUserName(username);
+    const wishlist = await Wishlist.findById(user.wishlist);
+
+    let game = await VideoGame.findByTitle(title);
+    if(game) {
+        if(wishlist.games.includes(game._id)) {
+            res.status(400).send("game already in wishlist");
+            return;
+        }
+    }
+    game = await VideoGame.createGameFromTitle(title);
+    wishlist.games.push(game);
+    wishlist.markModified('games');
+    const test = await wishlist.save();
+    res.status(200).send("game added");
+
+    
 });
 
 module.exports = router;
