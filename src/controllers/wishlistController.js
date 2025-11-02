@@ -5,7 +5,6 @@ const User = require('../models/UserModel');
 const Storefront = require('../models/StorefrontModel');
 const Wishlist = require('../models/WishlistModel');
 const VideoGame = require('../models/VideoGameModel');
-const mongoose = require("mongoose");
 
 //router.use(jwt.authenticateUser);
 
@@ -30,19 +29,19 @@ router.delete("/remove/:id", async (req, res) => {
     const username = req.body.username;
     const user = await User.findByUserName(username);
     const wishlist = await Wishlist.findById(user.wishlist);
+    
     if(!wishlist.games.includes(gameId)) {
         res.status(404).send("Game not found");
         return;
     }
-    console.log("removing id " + req.params.id);
     wishlist.games.pull(gameId);
     wishlist.markModified('games');
-    const test = await wishlist.save();
-    if(!wishlist.games.includes(gameId)) {
+    try {
+        await wishlist.save();
         res.status(200).send("game removed");
-    }
-    else{
-        res.status(404).send("error");
+    } catch(error) {
+        console.error("error in saving", error);
+        res.status(500).send("error");
     }
 });
 
@@ -62,8 +61,13 @@ router.post("/add", async (req,res) => {
     game = await VideoGame.createGameFromTitle(title);
     wishlist.games.push(game);
     wishlist.markModified('games');
-    const test = await wishlist.save();
-    res.status(200).send("game added");
+    try {
+        await wishlist.save();
+        res.status(200).send("game added");
+    } catch(error) {
+        console.error("error in saving", error);
+        res.status(500).send("error");
+    }
 });
 
 // frontend should send storefronts as array of object ids
@@ -88,11 +92,16 @@ router.patch("/storefront", async (req, res) => {
             return;
         }
     }
-    
+
     wishlist.preferredStores = newStores;
     wishlist.markModified('preferredStores');
-    const test = await wishlist.save();
-    res.status(200).send("preferred stores updated");
+    try {
+        await wishlist.save();
+        res.status(200).send("preferred stores updated");
+    } catch(error) {
+        console.error("error in saving", error);
+        res.status(500).send("error");
+    }
 });
 
 module.exports = router;
