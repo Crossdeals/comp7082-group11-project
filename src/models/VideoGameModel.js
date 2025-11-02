@@ -12,9 +12,22 @@ const DealInfoModelSchema = new Schema({
 });
 
 const VideoGameModelSchema = new Schema({
-    title: { type: String, required: true},
+    title: { type: String, required: true, unique: true },
     deals: { type: [DealInfoModelSchema] }
 });
+
+VideoGameModelSchema.statics.findByTitle = function(title) {
+    return this.findOne({ title: title });
+};
+
+VideoGameModelSchema.statics.createGameFromTitle = async function(title) {
+    try {
+        const newGame = await this.create( { title: title} );
+        return newGame;
+    } catch(error) {
+        console.log(error);
+    }
+}
 
 const VideoGame = mongoose.model('VideoGame', VideoGameModelSchema);
 

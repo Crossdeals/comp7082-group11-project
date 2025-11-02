@@ -30,6 +30,10 @@ UserModelSchema.methods.comparePassword = async function(password, callback) {
     }
 }
 
+UserModelSchema.statics.findByUserName = function(userName) {
+    return this.findOne({ userName: userName });
+};
+
 const User = mongoose.model('User', UserModelSchema);
 
 module.exports = User;
