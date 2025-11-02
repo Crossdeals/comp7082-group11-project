@@ -58,7 +58,14 @@ router.post("/add", async (req,res) => {
             return;
         }
     }
-    game = await VideoGame.createGameFromTitle(title);
+    else {
+        game = await VideoGame.createGameFromTitle(title);
+        if(!game) {
+            res.status(500).send("error creating game");
+            return;
+        }
+    }
+    
     wishlist.games.push(game);
     wishlist.markModified('games');
     try {
