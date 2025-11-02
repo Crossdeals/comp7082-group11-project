@@ -2,8 +2,10 @@ const express = require('express');
 const jwt = require('../util/jwtHandler');
 const router = express.Router();
 const User = require('../models/UserModel');
+const Storefront = require('../models/StorefrontModel');
 const Wishlist = require('../models/WishlistModel');
 const VideoGame = require('../models/VideoGameModel');
+const mongoose = require("mongoose");
 
 //router.use(jwt.authenticateUser);
 
@@ -45,7 +47,6 @@ router.delete("/remove/:id", async (req, res) => {
 });
 
 router.post("/add", async (req,res) => {
-    console.log("adding " + req.body.title);
     const title = req.body.title;
     const username = req.body.username;
     const user = await User.findByUserName(username);
@@ -63,8 +64,35 @@ router.post("/add", async (req,res) => {
     wishlist.markModified('games');
     const test = await wishlist.save();
     res.status(200).send("game added");
+});
 
+// frontend should send storefronts as array of object ids
+router.patch("/storefront", async (req, res) => {
+    const username = req.body.username;
+    const preferredStores = req.body.stores;
+    const user = await User.findByUserName(username);
+    const wishlist = await Wishlist.findById(user.wishlist);
+    const newStores = [];
+
+    for(let i = 0; i < preferredStores.length; i++) {
+        const inStorefront = await Storefront.findById(preferredStores[i]);
+        if(inStorefront) {
+            newStores.push(preferredStores[i]);
+        }
+    }
+
+    if(newStores.length === wishlist.preferredStores.length) {
+        const idStringArray = wishlist.preferredStores.map( id => id.toString());
+        if(idStringArray.every(id => newStores.includes(id))){
+            res.status(200).send("no changes to preferred stores");
+            return;
+        }
+    }
     
+    wishlist.preferredStores = newStores;
+    wishlist.markModified('preferredStores');
+    const test = await wishlist.save();
+    res.status(200).send("preferred stores updated");
 });
 
 module.exports = router;
