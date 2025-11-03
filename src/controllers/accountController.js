@@ -87,12 +87,12 @@ router.post('/username', function (req, res, next) {
     const username = req.body.username;
     let token = req.headers.cookie;
     token = token.split('=')[1];
-    const verified = jwtHandler.verifyToken(username, token);
-    let usernameVerified = verified.username;
+    const verifiedToken = jwtHandler.verifyToken(token);
+    const verified = verifiedToken.username === username;
 
     if (verified) {
         res.status(200);
-        res.json({ username: usernameVerified });
+        res.json({ username: verifiedToken.username });
     }
     else {
         res.status(403);
