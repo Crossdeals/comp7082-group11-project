@@ -31,17 +31,17 @@ exports.verifyToken = function (token) {
     }
 }
 
-// exports.authenticateUser = (req, res, next) =>{
-//     let token = req.headers.cookie;
-//     token = token.split('=')[1];
-//     const verified = verifyToken(username, token);
+exports.authenticateUser = (req, res, next) =>{
+    let token = req.headers.cookie;
+    token = token.split('=')[1];
+    const verified = this.verifyToken(token);
 
-//     if (verified) {
-//         req.user = decoded; 
-//         next();
-//     }
-//     else {
-//         res.status(403);
-//         res.json({ message: "Token verification failed" });
-//     }
-// }
+    if (verified) {
+        req.username = verified.username; 
+        next();
+    }
+    else {
+        res.status(403);
+        res.json({ message: "Token verification failed" });
+    }
+}

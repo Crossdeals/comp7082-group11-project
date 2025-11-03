@@ -6,10 +6,10 @@ const Storefront = require('../models/StorefrontModel');
 const Wishlist = require('../models/WishlistModel');
 const VideoGame = require('../models/VideoGameModel');
 
-//router.use(jwt.authenticateUser);
+router.use(jwt.authenticateUser);
 
 router.get("/index", async (req, res) => {
-    const userData = await User.findByUserName(req.body.username).populate({
+    const userData = await User.findByUserName(req.username).populate({
         path: 'wishlist',
         populate: {
             path: 'games', 
@@ -26,8 +26,7 @@ router.get("/index", async (req, res) => {
 
 router.delete("/remove/:id", async (req, res) => {
     const gameId = req.params.id;
-    const username = req.body.username;
-    const user = await User.findByUserName(username);
+    const user = await User.findByUserName(req.username);
     const wishlist = await Wishlist.findById(user.wishlist);
     
     if(!wishlist.games.includes(gameId)) {
@@ -47,8 +46,7 @@ router.delete("/remove/:id", async (req, res) => {
 
 router.post("/add", async (req,res) => {
     const title = req.body.title;
-    const username = req.body.username;
-    const user = await User.findByUserName(username);
+    const user = await User.findByUserName(req.username);
     const wishlist = await Wishlist.findById(user.wishlist);
 
     let game = await VideoGame.findByTitle(title);
@@ -79,9 +77,8 @@ router.post("/add", async (req,res) => {
 
 // frontend should send storefronts as array of object ids
 router.patch("/storefront", async (req, res) => {
-    const username = req.body.username;
     const preferredStores = req.body.stores;
-    const user = await User.findByUserName(username);
+    const user = await User.findByUserName(req.username);
     const wishlist = await Wishlist.findById(user.wishlist);
     const newStores = [];
 
