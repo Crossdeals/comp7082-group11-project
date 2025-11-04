@@ -4,7 +4,7 @@
   "description": "Intro to Software Engineering Project",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
   },
   "repository": {
     "type": "git",
@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/Crossdeals/comp7082-group11-project#readme",
   "dependencies": {
+    "axios": "^1.13.1",
     "bcrypt": "^6.0.0",
     "body-parser": "^2.2.0",
     "dotenv": "^17.2.2",
@@ -27,5 +28,8 @@
     "passport": "^0.7.0",
     "passport-local": "^1.0.0",
     "puppeteer": "^24.22.3"
+  },
+  "devDependencies": {
+    "jest": "^30.2.0"
   }
 }
