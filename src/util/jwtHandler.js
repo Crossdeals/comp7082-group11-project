@@ -32,8 +32,7 @@ exports.verifyToken = function (token) {
 }
 
 exports.authenticateUser = (req, res, next) =>{
-    let token = req.headers.cookie;
-    token = token.split('=')[1];
+    let token = req.cookies.token;
     const verified = this.verifyToken(token);
 
     if (verified) {

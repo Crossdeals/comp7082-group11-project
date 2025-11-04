@@ -85,8 +85,7 @@ router.post('/login', async (req, res) => {
 
 router.post('/username', function (req, res, next) {
     const username = req.body.username;
-    let token = req.headers.cookie;
-    token = token.split('=')[1];
+    let token = req.cookies.token; 
     const verifiedToken = jwtHandler.verifyToken(token);
     const verified = verifiedToken.username === username;
 
