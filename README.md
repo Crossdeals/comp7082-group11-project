@@ -3,15 +3,15 @@ Intro to Software Engineering Project
 
 ## Running the backend server
 
-Prerequisites:
-node.js (v22.20.0(LTS))
+Prerequisites:  
+node.js (v22.20.0(LTS))  
 mongodb (8.2)
 
-To run the server, you must first run the following command in the root folder of the project:
-npm install
-
-To run the server, run
-node .\src\server.js
+To run the server, you will need to do the following:  
+Run ``npm install``in the root folder of the project  
+Add .env file in project root (look at .env.sample for reference)  
+Have a mongodb instance running  
+Run ``node .\src\server.js`` in the project root
 
 ## Initialize the frontend submodule
 

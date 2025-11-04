@@ -1,28 +1,32 @@
 const express = require('express');
 const app = express();
 const connectDB = require('./config/db');
-const accountRoute = require('./routes/accountRoutes');
 const accountController = require('./controllers/accountController');
+const wishlistController = require('./controllers/wishlistController');
 const bodyParser = require('body-parser');
-const session = require('express-session');
-const passport = require('passport');
+const cookieParser = require("cookie-parser");
+const StorefrontSeeder = require('./util/storefrontSeeder');
 
-app.use(
-    session({
-        secret: "Crossdeals",
-        resave: false,
-        saveUninitialized: false,
-    })
-);
-app.use(passport.authenticate('session'));
 require('dotenv').config();
+connectDB();
+StorefrontSeeder();
+app.use(cookieParser());
+
+const allowHeaders = (req, res, next) => {
+    // If hosted, set the origin to the FE address.
+    res.header('Access-Control-Allow-Origin', `null`);
+    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    res.header('Access-Control-Allow-Credentials', 'true');
+    next();
+}
+
+app.use(allowHeaders);
+
 app.use(express.json());
 app.use(bodyParser.json());
-app.use(express.urlencoded({ extended: false }));
-
-connectDB();
-
-app.use("/", accountRoute);
+app.use(express.urlencoded({ extended: true }));
 app.use("/", accountController);
+app.use("/wishlist", wishlistController);
 
 module.exports = app;

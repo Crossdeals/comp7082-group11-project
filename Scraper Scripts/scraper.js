@@ -110,7 +110,7 @@ async function GetXbox(gameTitle) {
     await page.screenshot({path: "./Xbox.png"});
     await browser.close();
     parsedPrice = parseFloat((mainPrice.substring(5)+"0"));
-    
+
     return parsedPrice;
 }
 
@@ -214,7 +214,7 @@ async function TestSteam() {
         console.log(`Full results array: ${results}`);
     }
 }
-// TestSteam();
+await TestSteam();
 
 // Test Epic Games:
 async function TestEpic() {
@@ -226,7 +226,7 @@ async function TestEpic() {
         console.log(`${results} == ${realPrices[i]}: ${results == realPrices[i]}`);
     }
 }
-// TestEpic();
+await TestEpic();
 
 // Test Xbox:
 async function TestXbox() {
@@ -238,4 +238,4 @@ async function TestXbox() {
         console.log(`${results} == ${realPrices[i]}: ${results == realPrices[i]}`);
     }
 }
-TestXbox();
+await TestXbox();

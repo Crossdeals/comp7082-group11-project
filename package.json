@@ -21,12 +21,11 @@
     "axios": "^1.13.1",
     "bcrypt": "^6.0.0",
     "body-parser": "^2.2.0",
+    "cookie-parser": "^1.4.7",
     "dotenv": "^17.2.2",
     "express": "^5.1.0",
-    "express-session": "^1.18.2",
+    "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.18.1",
-    "passport": "^0.7.0",
-    "passport-local": "^1.0.0",
     "puppeteer": "^24.22.3"
   },
   "devDependencies": {
