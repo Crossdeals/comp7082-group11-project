@@ -12,12 +12,12 @@ exports.getToken = function (username) {
     return token;
 }
 
-exports.verifyToken = function (username, token) {
+exports.verifyToken = function (token) {
     const secretKey = process.env.SECRET_KEY;
 
     try {
         const decoded = jwt.verify(token, secretKey);
-        if (!decoded || !decoded.username || decoded.username !== username) {
+        if (!decoded || !decoded.username) {
             return null;
         }
         return decoded;
@@ -31,18 +31,16 @@ exports.verifyToken = function (username, token) {
     }
 }
 
-// exports.authenticateUser = (req, res, next) =>{
-//     const username = req.body.username;
-//     let token = req.headers.cookie;
-//     token = token.split('=')[1];
-//     const verified = verifyToken(username, token);
+exports.authenticateUser = (req, res, next) =>{
+    let token = req.cookies.token;
+    const verified = this.verifyToken(token);
 
-//     if (verified) {
-//         req.user = decoded; 
-//         next();
-//     }
-//     else {
-//         res.status(403);
-//         res.json({ message: "Token verification failed" });
-//     }
-// }
+    if (verified) {
+        req.username = verified.username; 
+        next();
+    }
+    else {
+        res.status(403);
+        res.json({ message: "Token verification failed" });
+    }
+}
