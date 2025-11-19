@@ -27,5 +27,8 @@
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.18.1",
     "puppeteer": "^24.22.3"
+  },
+  "devDependencies": {
+    "mongodb-memory-server": "^10.3.0"
   }
 }
