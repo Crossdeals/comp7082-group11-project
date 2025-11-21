@@ -26,7 +26,6 @@ exports.verifyToken = function (token) {
         if (error instanceof jwt.TokenExpiredError) {
             return null;
         }
-        console.log(error);
         return null;
     }
 }

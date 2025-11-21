@@ -88,6 +88,14 @@ describe("Account Controller Tests", () =>{
             .expect({ message: "User does not exist" });
     });
 
+    it("should fail token verification if token not supplied", async () => {
+        await request(app)
+            .post("/username")
+            .send({ username: testName })
+            .expect(401)
+            .expect({ message: "Access Denied" });
+    });
+
     it("should fail token verification if invalid username", async () => {
         await agent
             .post("/username")

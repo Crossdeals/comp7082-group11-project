@@ -86,6 +86,11 @@ router.post('/username', function (req, res, next) {
     const username = req.body.username;
     let token = req.cookies.token; 
     const verifiedToken = jwtHandler.verifyToken(token);
+    if(!verifiedToken) {
+        res.status(401);
+        res.json({ message: "Access Denied" });
+        return;
+    }
     const verified = verifiedToken.username === username;
 
     if (verified) {
