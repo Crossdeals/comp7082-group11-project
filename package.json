@@ -31,6 +31,7 @@
   "devDependencies": {
     "chai": "^6.2.1",
     "mocha": "^11.7.5",
-    "mongodb-memory-server": "^10.3.0"
+    "mongodb-memory-server": "^10.3.0",
+    "supertest": "^7.1.4"
   }
 }
