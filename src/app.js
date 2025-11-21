@@ -1,16 +1,13 @@
 const express = require('express');
 const app = express();
-const connectDB = require('./config/db');
 const accountController = require('./controllers/accountController');
 const wishlistController = require('./controllers/wishlistController');
 const bodyParser = require('body-parser');
 const cookieParser = require("cookie-parser");
-const StorefrontSeeder = require('./util/storefrontSeeder');
 const cors = require('cors');
 
 require('dotenv').config();
-connectDB();
-StorefrontSeeder();
+
 app.use(cookieParser());
 
 const corsOptions = {
