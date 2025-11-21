@@ -4,19 +4,28 @@ const mongoose = require("mongoose");
 
 describe("VideoGame Model Unit Tests", () => {
 
+    const seededTitle = "seeded";
     const testTitle = "test";
     const createDealInfo = function(originalPrice = 50, currentPrice = 50) {
         return { storefront: null, originalPrice: originalPrice, currentPrice: currentPrice }
     };
 
-    afterEach(async () => {
+    before(async() => {
+        await VideoGame.createGameFromTitle(seededTitle);
+    });
+
+    after(async () => {
         await VideoGame.deleteMany({});
+    });
+
+    afterEach(async () => {
+        await VideoGame.deleteMany({ title: { $ne: seededTitle } });
     });
 
     it("should create and save VideoGame with title", async() =>{
         await VideoGame.createGameFromTitle(testTitle);
         const count = await VideoGame.countDocuments();
-        expect(count).is.equal(1, "No videogame in collection");
+        expect(count).is.equal(2, "Video game not added to collection");
         const testGame = await VideoGame.findByTitle(testTitle);
         expect(testGame.title).is.equal(testTitle, "Video game title does not match");
     });
@@ -31,13 +40,13 @@ describe("VideoGame Model Unit Tests", () => {
         }
         expect(error).instanceOf(mongoose.Error.ValidationError);
         const count = await VideoGame.countDocuments();
-        expect(count).is.equal(0, "Videogame collection should be empty");
+        expect(count).is.equal(1, "Videogame collection should only contain seeded game");
     });
 
     it("should fail to create VideoGame with non-unique title", async() =>{
         let error;
         try {
-            await VideoGame.insertMany([{ title:testTitle }, { title:testTitle }]);
+            await VideoGame.createGameFromTitle(seededTitle);
         }
         catch(e) {
             error = e;
@@ -45,7 +54,7 @@ describe("VideoGame Model Unit Tests", () => {
         expect(error.code).to.equal(11000);
         expect(error.message).to.include("duplicate key error");
         const count = await VideoGame.countDocuments();
-        expect(count).is.equal(1, "Videogame collection should be empty");
+        expect(count).is.equal(1, "Videogame collection should not have added duplicate game");
     });
 
     it("should add valid DealInfo to VideoGame", async() =>{

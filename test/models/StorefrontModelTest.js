@@ -20,10 +20,10 @@ describe("Storefront Model Unit Tests", () => {
     it("should create and save Storefront", async () =>{
         await createTestStorefront();
         const count = await Storefront.collection.countDocuments();
-        expect(count).to.equal(1);
+        expect(count).to.equal(1, "Storefront collection should have 1 entry");
         const testStore = await Storefront.findOne({ url: testUrl });
-        expect(testStore.url).to.equal(testUrl);
-        expect(testStore.name).to.equal(testName);
+        expect(testStore.url).to.equal(testUrl, "Storefront url not expected value");
+        expect(testStore.name).to.equal(testName, "Storefront name not expected value");
     });
 
     it("should fail to create Storefront if url is empty", async () =>{ 
@@ -34,9 +34,9 @@ describe("Storefront Model Unit Tests", () => {
         catch(e) {
             error = e;
         }
-        expect(error).instanceOf(mongoose.Error.ValidationError);
+        expect(error).instanceOf(mongoose.Error.ValidationError, "Mongoose validation error expected");
         const count = await Storefront.collection.countDocuments();
-        expect(count).is.equal(0);
+        expect(count).is.equal(0, "Storefront collection should be empty");
     });
 
     it("should fail to create Storefront if name is empty", async () =>{ 
@@ -47,9 +47,9 @@ describe("Storefront Model Unit Tests", () => {
         catch(e) {
             error = e;
         }
-        expect(error).instanceOf(mongoose.Error.ValidationError);
+        expect(error).instanceOf(mongoose.Error.ValidationError, "Mongoose validation error expected");
         const count = await Storefront.collection.countDocuments();
-        expect(count).is.equal(0);
+        expect(count).is.equal(0, "Storefront collection should be empty");
     });
 
     it("should fail to create Storefront if platforms is empty", async () =>{ 
@@ -60,9 +60,9 @@ describe("Storefront Model Unit Tests", () => {
         catch(e) {
             error = e;
         }
-        expect(error).instanceOf(mongoose.Error.ValidationError);
+        expect(error).instanceOf(mongoose.Error.ValidationError, "Mongoose validation error expected");
         const count = await Storefront.collection.countDocuments();
-        expect(count).is.equal(0);
+        expect(count).is.equal(0, "Storefront collection should be empty");
     });
   
 });
