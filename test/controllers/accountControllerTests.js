@@ -11,7 +11,7 @@ describe("Account Controller Tests", () =>{
     let agent;
 
     before(async () => {
-        await User.create( {userName: testName, password: testPassword});
+        await User.create({ userName: testName, password: testPassword });
     });
 
     before(async () => {
@@ -19,51 +19,51 @@ describe("Account Controller Tests", () =>{
         await agent
             .post("/login")
             .type("form")
-            .send( { username: testName, password: testPassword } )
+            .send({ username: testName, password: testPassword })
             .expect(200)
             .expect({message: "Login ok"});
     });
 
     after(async () => {
-        await User.deleteMany( {} );
+        await User.deleteMany({});
     });
 
     it("should fail signup if password is missing", async () => {
-        const response = await request(app)
+        await request(app)
             .post("/signup")
             .type("form")
-            .send( { username: testName } )
+            .send({ username: testName })
             .expect(403)
-            .expect({message: "Missing username or password"});
+            .expect({ message: "Missing username or password" });
     });
 
-    it("should fail signup if username is misssing", async () => {
-        const response = await request(app)
+    it("should fail signup if username is missing", async () => {
+        await request(app)
             .post("/signup")
             .type("form")
-            .send( { password: testPassword } )
+            .send({ password: testPassword })
             .expect(403)
-            .expect({message: "Missing username or password"});
+            .expect({ message: "Missing username or password" });
     });
 
-    it("should fail signup if username is alredy in use", async () => {
-        const response = await request(app)
+    it("should fail signup if username is already in use", async () => {
+        await request(app)
             .post("/signup")
             .type("form")
-            .send( { username: testName, password: testPassword } )
+            .send({ username: testName, password: testPassword })
             .expect(409)
-            .expect({message: "User already exists"});
+            .expect( {message: "User already exists" });
     });
 
-    it("should succeed signup with valid username and password", async () => {
+    it("should succeed signup with valid username and password and have wishlist", async () => {
         const newName = "newUser";
         
-        const response = await request(app)
+        await request(app)
             .post("/signup")
             .type("form")
-            .send( { username: newName, password: testPassword } )
+            .send({ username: newName, password: testPassword })
             .expect(200)
-            .expect({message: "User created"});
+            .expect({ message: "User created" });
 
         const newUser = await User.findOne({ userName: newName });
         const validId = mongoose.isValidObjectId(newUser.wishlist);
@@ -71,38 +71,37 @@ describe("Account Controller Tests", () =>{
     });
 
     it("should fail login with invalid password", async () => {
-        const response = await request(app)
+        await request(app)
             .post("/login")
             .type("form")
-            .send( { username: testName, password: "" } )
+            .send({ username: testName, password: "" })
             .expect(403)
-            .expect({message: "Password does not match"});
+            .expect({ message: "Password does not match" });
     });
 
     it("should fail login with invalid user", async () => {
-        const noExistUser = "fake";
-        const response = await request(app)
+        await request(app)
             .post("/login")
             .type("form")
-            .send( { username: "fake", password: "" } )
+            .send({ username: "fake", password: testPassword })
             .expect(403)
-            .expect({message: "User does not exist"});
+            .expect({ message: "User does not exist" });
     });
 
     it("should fail token verification if invalid username", async () => {
-        const response = await agent
+        await agent
             .post("/username")
-            .send( { username: "fake" } )
+            .send({ username: "fake" })
             .expect(403)
-            .expect({message: "Token verification failed"});
+            .expect({ message: "Token verification failed" });
     });
 
     it("should succeed token verification with valid username", async () => {
-        const response = await agent
+        await agent
             .post("/username")
-            .send( { username: testName } )
+            .send({ username: testName })
             .expect(200)
-            .expect({username: testName});
+            .expect({ username: testName });
     });
 
 });
