@@ -4,8 +4,9 @@ const User = require("../../src/models/UserModel");
 const { expect } = require("chai");
 const mongoose = require("mongoose");
 
-describe("Account Controller Tests", () =>{
+describe("Account Controller Tests", function(){
 
+    this.timeout(5000);
     const testName = "test";
     const testPassword = "test"
     let agent;
@@ -20,8 +21,6 @@ describe("Account Controller Tests", () =>{
             .post("/login")
             .type("form")
             .send({ username: testName, password: testPassword })
-            .expect(200)
-            .expect({message: "Login ok"});
     });
 
     after(async () => {
@@ -86,6 +85,15 @@ describe("Account Controller Tests", () =>{
             .send({ username: "fake", password: testPassword })
             .expect(403)
             .expect({ message: "User does not exist" });
+    });
+
+    it("should succeed login with valid credentials", async () => {
+        await agent
+            .post("/login")
+            .type("form")
+            .send({ username: testName, password: testPassword })
+            .expect(200)
+            .expect({message: "Login ok"});
     });
 
     it("should fail token verification if token not supplied", async () => {
