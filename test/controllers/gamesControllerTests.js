@@ -3,6 +3,7 @@ const app = require("../../src/app");
 const VideoGame = require("../../src/models/VideoGameModel");
 const Storefront = require("../../src/models/StorefrontModel");
 const { expect } = require("chai");
+const mongoose = require("mongoose");
 
 describe("Games Controller Tests", function() {
     const testGameOne = "game1";
@@ -40,8 +41,26 @@ describe("Games Controller Tests", function() {
         const testPath = "/games";
         const response = await request(app)
         .get(testPath)
-        .expect(200)
+        .expect(200);
         expect(Array.isArray(response.body), "/games should send an array").to.be.true;
         expect(response.body.length).is.equal(2, "Videogame collection should only have 2 games");
+    });
+
+    it("should not return game info if invalid game id", async() => {
+        const invalidId = new mongoose.Types.ObjectId();
+        const testPath = "/games/" + invalidId.toString();
+        await request(app)
+        .get(testPath)
+        .expect(404)
+        .expect({ message: "Invalid game id" });
+    });
+
+    it("should return game info if valid game id", async() => {
+        const testPath = "/games/" + testGameOneId.toString();
+        const response = await request(app)
+        .get(testPath)
+        .expect(200);
+
+        expect(response.body.title).is.equal(testGameOne);
     });
 });
