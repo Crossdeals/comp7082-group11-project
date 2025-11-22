@@ -18,9 +18,8 @@ async function createWishList(user){
 
 // User registration route
 router.post("/signup", async (req, res) => {
-    console.log(req.body);
     const { username, password } = req.body;
-    if (!username && !password) {
+    if (!username || !password) {
         return res
             .status(403)
             .json({ message: "Missing username or password" });
@@ -87,6 +86,11 @@ router.post('/username', function (req, res, next) {
     const username = req.body.username;
     let token = req.cookies.token; 
     const verifiedToken = jwtHandler.verifyToken(token);
+    if(!verifiedToken) {
+        res.status(401);
+        res.json({ message: "Access Denied" });
+        return;
+    }
     const verified = verifiedToken.username === username;
 
     if (verified) {
