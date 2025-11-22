@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-const Storefront = require('./StorefrontModel');
 
 const Schema = mongoose.Schema;
 
@@ -25,7 +24,18 @@ VideoGameModelSchema.statics.createGameFromTitle = async function(title) {
         const newGame = await this.create( { title: title} );
         return newGame;
     } catch(error) {
-        console.log(error);
+        throw error;
+    }
+}
+
+VideoGameModelSchema.methods.pushDealInfo = async function(dealInfo) {
+    this.deals.push(dealInfo);
+    try {
+        await this.validate();
+    }
+    catch(error) {
+        this.deals.pop();
+        throw error;
     }
 }
 
