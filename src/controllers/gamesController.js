@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const Storefront = require('../models/StorefrontModel');
 const VideoGame = require('../models/VideoGameModel');
+const mongoose = require("mongoose");
 
 router.get("", async (req, res) => {
     const games = await VideoGame.find({}).populate("deals.storefront");
@@ -23,6 +23,12 @@ router.get("/search", async (req, res) => {
 
 router.get("/:id", async (req, res) => {
     const gameId = req.params.id;
+    const validId = mongoose.Types.ObjectId.isValid(gameId);
+    if(!validId) {
+        res.status(404);
+        res.json({ message: "Paramter is not an id" });
+        return;
+    }
     const game = await VideoGame.findById(gameId).populate("deals.storefront");
     if(!game) {
         res.status(404);

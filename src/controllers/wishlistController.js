@@ -5,6 +5,7 @@ const User = require('../models/UserModel');
 const Storefront = require('../models/StorefrontModel');
 const Wishlist = require('../models/WishlistModel');
 const VideoGame = require('../models/VideoGameModel');
+const mongoose = require("mongoose");
 
 router.use(jwt.authenticateUser);
 
@@ -26,6 +27,13 @@ router.get("/index", async (req, res) => {
 
 router.delete("/remove/:id", async (req, res) => {
     const gameId = req.params.id;
+    const validId = mongoose.Types.ObjectId.isValid(gameId);
+    if(!validId) {
+        res.status(404);
+        res.json({ message: "Paramter is not an id" });
+        return;
+    }
+
     const user = await User.findByUserName(req.username);
     const wishlist = await Wishlist.findById(user.wishlist);
     

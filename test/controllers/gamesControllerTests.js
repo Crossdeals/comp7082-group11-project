@@ -46,6 +46,15 @@ describe("Games Controller Tests", function() {
         expect(response.body.length).is.equal(2, "Videogame collection should only have 2 games");
     });
 
+    it("should not return game info if parameter is not an object id", async() => {
+        const invalidId = "invalid id"
+        const testPath = "/games/" + invalidId.toString();
+        await request(app)
+        .get(testPath)
+        .expect(404)
+        .expect({ message: "Paramter is not an id" });
+    });
+
     it("should not return game info if invalid game id", async() => {
         const invalidId = new mongoose.Types.ObjectId();
         const testPath = "/games/" + invalidId.toString();
