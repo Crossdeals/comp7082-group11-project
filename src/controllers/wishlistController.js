@@ -52,14 +52,15 @@ router.post("/add", async (req,res) => {
     let game = await VideoGame.findByTitle(title);
     if(game) {
         if(wishlist.games.includes(game._id)) {
-            res.status(400).send("game already in wishlist");
+            res.status(400).json({ message: "Game already in wishlist" });
             return;
         }
     }
     else {
+        // invoke web scraper here
         game = await VideoGame.createGameFromTitle(title);
         if(!game) {
-            res.status(500).send("error creating game");
+            res.status(500).json({ message: "Error creating game" });
             return;
         }
     }
@@ -68,31 +69,36 @@ router.post("/add", async (req,res) => {
     wishlist.markModified('games');
     try {
         await wishlist.save();
-        res.status(200).send("game added");
+        res.status(200).json({ message: "Game added" });
     } catch(error) {
         console.error("error in saving", error);
-        res.status(500).send("error");
+        res.status(500).json({ message: "Error saving changes" });
     }
 });
 
 // frontend should send storefronts as array of object ids
 router.patch("/storefront", async (req, res) => {
-    const preferredStores = req.body.stores;
+    const preferredStoresChanges = req.body.stores;
     const user = await User.findByUserName(req.username);
     const wishlist = await Wishlist.findById(user.wishlist);
     const newStores = [];
 
-    for(let i = 0; i < preferredStores.length; i++) {
-        const inStorefront = await Storefront.findById(preferredStores[i]);
+    for(let i = 0; i < preferredStoresChanges.length; i++) {
+        const inStorefront = await Storefront.findById(preferredStoresChanges[i]);
         if(inStorefront) {
-            newStores.push(preferredStores[i]);
+            newStores.push(preferredStoresChanges[i]);
         }
     }
 
-    if(newStores.length === wishlist.preferredStores.length) {
+    if(newStores.length === 0 && preferredStoresChanges.length > 0) {
+        res.status(404).json({ message: "No valid stores to update" });
+        return;
+    }
+    
+    else if(newStores.length === wishlist.preferredStores.length) {
         const idStringArray = wishlist.preferredStores.map( id => id.toString());
         if(idStringArray.every(id => newStores.includes(id))){
-            res.status(200).send("no changes to preferred stores");
+            res.status(200).json({ message: "No changes to preferred stores" });
             return;
         }
     }
@@ -101,10 +107,10 @@ router.patch("/storefront", async (req, res) => {
     wishlist.markModified('preferredStores');
     try {
         await wishlist.save();
-        res.status(200).send("preferred stores updated");
+        res.status(200).json({ message: "Preferred stores updated" });
     } catch(error) {
         console.error("error in saving", error);
-        res.status(500).send("error");
+        res.status(500).json({ message: "Error saving changes" });
     }
 });
 

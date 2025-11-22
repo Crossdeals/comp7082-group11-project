@@ -3,7 +3,7 @@ const app = require("../../src/app");
 const User = require("../../src/models/UserModel");
 const Wishlist = require("../../src/models/WishlistModel");
 const VideoGame = require("../../src/models/VideoGameModel");
-const { expect } = require("chai");
+const Storefront = require("../../src/models/StorefrontModel");
 const mongoose = require("mongoose");
 
 describe("Wishlist Controller Tests", function() {
@@ -28,13 +28,15 @@ describe("Wishlist Controller Tests", function() {
     before(async () => {
         testGame = await VideoGame.createGameFromTitle(testName);
         testGameId = testGame._id;
-        testStoreId = new mongoose.Types.ObjectId();
+        const testStore = await Storefront.create({ url: "testUrl", name: testName, platforms: [testName] });
+        testStoreId = testStore._id;
     });
 
     after(async () => {
         await VideoGame.deleteMany({});
         await Wishlist.deleteMany({});
         await User.deleteMany({});
+        await Storefront.deleteMany({})
     });
 
     beforeEach(async () => {
@@ -52,6 +54,7 @@ describe("Wishlist Controller Tests", function() {
 
     afterEach(async () => {
         await Wishlist.deleteMany({});
+        await VideoGame.deleteMany({ title: { $ne: testName} });
     });
 
     it("should get wishlist from index when authenticated", async() => {
@@ -76,6 +79,53 @@ describe("Wishlist Controller Tests", function() {
         .delete(testPath)
         .expect(200)
         .expect({ message: "Game removed" });
+    });
+
+    it("should not add duplicate game to wishlist", async() => {
+        const testPath = testRootPath + "/add";
+        await agent
+        .post(testPath)
+        .send({ title: testName })
+        .expect(400)
+        .expect({ message: "Game already in wishlist" });
+    });
+
+    it("should add new game to wishlist", async() => {
+        const newGame = "new game"
+        const testPath = testRootPath + "/add";
+        await agent
+        .post(testPath)
+        .send({ title: newGame })
+        .expect(200)
+        .expect({ message: "Game added" });
+    });
+
+    it("should return error if no storefront information", async() => {
+        const randomStoreId = new mongoose.Types.ObjectId();
+        const testPath = testRootPath + "/storefront";
+        await agent
+        .patch(testPath)
+        .send({ stores: [randomStoreId] })
+        .expect(404)
+        .expect({ message: "No valid stores to update" });
+    });
+
+    it("should not update preferred stores if no change", async() => {
+        const testPath = testRootPath + "/storefront";
+        await agent
+        .patch(testPath)
+        .send({ stores: [testStoreId] })
+        .expect(200)
+        .expect({ message: "No changes to preferred stores" });
+    });
+
+    it("should update preferred stores if different from current", async() => {
+        const testPath = testRootPath + "/storefront";
+        await agent
+        .patch(testPath)
+        .send({ stores: [] })
+        .expect(200)
+        .expect({ message: "Preferred stores updated" });
     });
 
 });
