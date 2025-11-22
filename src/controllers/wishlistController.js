@@ -30,14 +30,14 @@ router.delete("/remove/:id", async (req, res) => {
     const wishlist = await Wishlist.findById(user.wishlist);
     
     if(!wishlist.games.includes(gameId)) {
-        res.status(404).send("Game not found");
+        res.status(404).json({ message: "Game not found" });
         return;
     }
     wishlist.games.pull(gameId);
     wishlist.markModified('games');
     try {
         await wishlist.save();
-        res.status(200).send("game removed");
+        res.status(200).json({ message: "Game removed" });
     } catch(error) {
         console.error("error in saving", error);
         res.status(500).send("error");
