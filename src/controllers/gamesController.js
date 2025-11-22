@@ -9,6 +9,18 @@ router.get("", async (req, res) => {
     res.json(games);
 });
 
+router.get("/search", async (req, res) => {
+    const gameTitle = req.query.title;
+    const games = await VideoGame.find({ title: { $regex: gameTitle, $options: "i" }}).populate("deals.storefront");
+    if(games.length === 0) {
+        res.status(404);
+        res.json({ message: "No games found" });
+        return;
+    }
+    res.status(200);
+    res.json(games);
+});
+
 router.get("/:id", async (req, res) => {
     const gameId = req.params.id;
     const game = await VideoGame.findById(gameId).populate("deals.storefront");

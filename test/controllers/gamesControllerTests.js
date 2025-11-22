@@ -63,4 +63,24 @@ describe("Games Controller Tests", function() {
 
         expect(response.body.title).is.equal(testGameOne);
     });
+
+    it("should not return game details if no game titles similar to query", async() => {
+        const title = "Minecraft";
+        const testPath = "/games/search?title=" + title; 
+        await request(app)
+        .get(testPath)
+        .expect(404)
+        .expect({ message: "No games found" });
+    });
+
+    it("should return game deals if game titles similar to query is found", async() => {
+        const title = "game";
+        const testPath = "/games/search?title=" + title;
+        const response = await request(app)
+        .get(testPath)
+        .expect(200);
+
+        expect(Array.isArray(response.body), "/games should send an array").to.be.true;
+        expect(response.body.length).is.equal(2, "Videogame title search should return 2 games");
+    });
 });
