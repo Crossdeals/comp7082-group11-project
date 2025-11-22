@@ -64,6 +64,15 @@ describe("Wishlist Controller Tests", function() {
         .expect(200);
     });
 
+    it("should not remove game from wishlist when gameid is not a valid objectid type", async() => {
+        const randomId = "invalid id";
+        const testPath = testRootPath + "/remove/" + randomId;
+        await agent
+        .delete(testPath)
+        .expect(404)
+        .expect({ message: "Paramter is not an id" });
+    });
+
     it("should not remove game from wishlist when gameid not found", async() => {
         const randomId = new mongoose.Types.ObjectId();
         const testPath = testRootPath + "/remove/" + randomId;
