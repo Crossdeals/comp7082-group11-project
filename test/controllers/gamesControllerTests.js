@@ -26,13 +26,13 @@ describe("Games Controller Tests", function() {
         return testGame._id;;
     };
 
-    before(async () => {
+    beforeEach(async () => {
         const testStore = await Storefront.create({ url: "testUrl", name: "test", platforms: ["test"] });
         testGameOneId = await createTestGame(testGameOne, 50, 25, testStore._id);
         testGameTwoId = await createTestGame(testGameTwo, 40, 20, testStore._id);
     });
 
-    after(async () => {
+    afterEach(async () => {
         await VideoGame.deleteMany({});
         await Storefront.deleteMany({});
     });
@@ -91,5 +91,21 @@ describe("Games Controller Tests", function() {
 
         expect(Array.isArray(response.body), "/games should send an array").to.be.true;
         expect(response.body.length).is.equal(2, "Videogame title search should return 2 games");
+    });
+
+    it("should return the featured game", async() => {
+        const testPath = "/games/featured"
+        const response = await request(app)
+        .get(testPath)
+        .expect(200);
+    });
+
+    it("should return error if no game to feature", async() => {
+        await VideoGame.deleteMany({});
+        const testPath = "/games/featured"
+        const response = await request(app)
+        .get(testPath)
+        .expect(404)
+        .expect({ message: "No featured game found" });
     });
 });
