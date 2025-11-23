@@ -21,6 +21,26 @@ router.get("/search", async (req, res) => {
     res.json(games);
 });
 
+router.get("/featured", async (req, res) => {
+    let games;
+    try {
+        games = await VideoGame.aggregate([{ $sample: { size: 1 }}]);
+    } catch(err) {
+        res.status(500);
+        res.json({ message: "Server error" });
+    }
+
+    if(games.length === 0) {
+        res.status(404);
+        res.json({ message: "No featured game found" });
+        return;
+    }
+
+    await VideoGame.populate(games, { path: "deals.storefront"});
+    res.status(200);
+    res.json(games[0]);
+});
+
 router.get("/:id", async (req, res) => {
     const gameId = req.params.id;
     const validId = mongoose.Types.ObjectId.isValid(gameId);
