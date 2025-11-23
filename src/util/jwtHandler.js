@@ -43,3 +43,13 @@ exports.authenticateUser = (req, res, next) =>{
         res.json({ message: "Token verification failed" });
     }
 }
+
+exports.checkForToken = (req, res, next) => {
+    let token = req.cookies.token;
+    const verified = this.verifyToken(token);
+
+    if (verified) {
+        req.username = verified.username; 
+    }
+    next();
+}
