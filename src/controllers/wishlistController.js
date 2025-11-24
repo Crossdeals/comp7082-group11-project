@@ -84,6 +84,13 @@ router.post("/add", async (req,res) => {
     }
 });
 
+router.get("/storefront", async (req, res) => {
+    const user = await User.findByUserName(req.username);
+    const wishlist = await Wishlist.findById(user.wishlist).lean();
+    res.status(200);
+    res.json(wishlist.preferredStores);
+});
+
 // frontend should send storefronts as array of object ids
 router.patch("/storefront", async (req, res) => {
     const preferredStoresChanges = req.body.stores;
