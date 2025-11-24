@@ -109,8 +109,8 @@ describe("Wishlist Controller Tests", function() {
         .expect({ message: "Game added" });
     });
 
-    it("should return error if no storefront information", async() => {
-        const randomStoreId = new mongoose.Types.ObjectId();
+    it("should return error if no storefront information during patch", async() => {
+        const randomStoreId = "randomId";
         const testPath = testRootPath + "/storefront";
         await agent
         .patch(testPath)
