@@ -137,4 +137,12 @@ describe("Wishlist Controller Tests", function() {
         .expect({ message: "Preferred stores updated" });
     });
 
+    it("should send the users preferred storefronts", async() => {
+        const testPath = testRootPath + "/storefront";
+        const res = await agent
+        .get(testPath)
+        .expect(200)
+        .expect("Content-Type", /json/);
+    });
+
 });
