@@ -73,7 +73,7 @@ router.post("/add", async (req,res) => {
         }
     }
     
-    wishlist.games.push(game);
+    wishlist.games.push(game._id);
     wishlist.markModified('games');
     try {
         await wishlist.save();
