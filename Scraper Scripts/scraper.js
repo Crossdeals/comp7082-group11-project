@@ -23,7 +23,8 @@ const ValidGameTitles = [
     "SUPER MARIO PARTY JAMBOREE",
     "GRAND THEFT AUTO V",
     "HALO INFINITE",
-    "BATTLEFIELD 6: PHANTOM EDITION"
+    "BATTLEFIELD 6: PHANTOM EDITION",
+    "PAPER MARIO"
 ];
 const CheckIsNum = new RegExp("[0-9]");
 
@@ -33,7 +34,7 @@ function isValidGameTitle(gameTitle) {
 }
 
 function GetPriceFromString(string) {
-    if (string.toLowerCase() == "free" || string.toLowerCase() == "free+") {
+    if (string.toLowerCase() == "free" || string.toLowerCase() == "free+" || string.toLowerCase() == "ree") {
         return 0.0;
     } else if (CheckIsNum.test(string)) {
         return parseFloat(string);
@@ -329,16 +330,17 @@ async function GetXbox(gameTitles, titleCount = 1) {
                 console.log(`Searching game title: ${gameTitles[i]}`);
                 await page.click("button#search");
                 await sleep.setTimeout(250);
-                for (let i = 0; i < 100; i++) {
+                for (let j = 0; j < 100; j++) {
                     await page.keyboard.press("Backspace");
                 }
                 await page.type("input#cli_shellHeaderSearchInput", gameTitles[i], {delay: 300});
 
                 await page.keyboard.press("Enter");
+                await page.waitForNavigation();
                 let gameDataList;
 
                 await page.waitForSelector("div.ProductCard-module__cardWrapper___6Ls86 > a > div + div", {timeout: 3000});
-                await sleep.setTimeout(1000);
+                await sleep.setTimeout(1500);
                 
                 gameDataList = await page.evaluate((gameTitle) => {
                     let itemsList = document.querySelectorAll("div.ProductCard-module__infoBox___M5x18");
@@ -435,99 +437,288 @@ async function GetXbox(gameTitles, titleCount = 1) {
     return data;
 }
 
-// getXbox("Minecraft");
-
-async function GetPlayStation(gameTitle) {
-    if (isValidGameTitle(gameTitle));
-    else return;
+async function GetPlayStation(gameTitles, titleCount = 1) {
     const browser = await puppeteer.launch({headless: false, args: [`--window-size=1280,720`], defaultViewport: {width: 1280, height: 720}});
     const page = await browser.newPage();
 
     await page.goto("https://store.playstation.com/en-ca/");
 
-    await page.click(".shared-nav-search");
-    await page.type(".search-text-box__input", gameTitle, {delay: 200});
-    await page.click(".jetstream-search__search-button");
+    let data = [];
 
-    await page.waitForSelector(".psw-m-r-3");
+    if (titleCount > 1) {
+        let b = 0;
+        for (let a = 0; a < titleCount; a++) {
+            if (isValidGameTitle(gameTitles[a])) {
+                await page.click(".shared-nav-search");
+                await page.type(".search-text-box__input", gameTitles[a], {delay: 200});
+                await page.keyboard.press("Enter");
 
-    const data = await page.evaluate(() => {
-        let prices = [];
-        let titles = [];
+                await sleep.setTimeout(1000);
 
-        const priceElements = document.querySelectorAll(".psw-m-r-3");
-        const titleElements = document.querySelectorAll("#product-name");
-        for (let i = 0; i < 6; i++) {
-            let price = 0;
-            if (priceElements[i].innerText == "Free") price = 0.00;
-            else if (priceElements[i].innerText == "Included") price = 20.99;
-            else price = parseFloat(priceElements[i].innerText.substring(1));
-            prices.push(price);
-            titles.push(titleElements[i].innerText);
+                let gameData = await page.evaluate(() => {
+                    let elements = document.querySelector("ul.psw-grid-list").querySelectorAll("li");
+                    let data = [];
+                    elements.forEach((e) => {
+                        data.push({
+                            "Title": e.querySelector("div > div > a > span > span").textContent,
+                            "OriginalPrice": e.querySelector("div > div > div.psw-price > div > span + span + s")?.textContent ?? e.querySelector("div > div > div.psw-price > div > span")?.textContent ?? e.querySelector("div > div > div.psw-price > span")?.textContent ?? "0",
+                            "DiscountPrice": e.querySelector("div > div > div.psw-price > div > span")?.textContent ?? e.querySelector("div > div > div.psw-price > span")?.textContent ?? "0",
+                            "DiscountPerc": e.querySelector("div > div > a + div + span + div > span")?.textContent ?? "0%"
+                        });
+                    });
+                    return data;
+                });
+
+                await sleep.setTimeout(3000);
+                let discountedArr = [];
+                for (let i = 0; i < gameData.length; i++) {
+                    let test = "";
+                    for (let j = 0; j < i; j++) {
+                        test += " + li";
+                    }
+                    console.log(test);
+                    let selector = "ul.psw-grid-list > li";
+                    for (let j = 0; j < i; j++) {
+                        selector += " + li";
+                    }
+                    selector += " > div > div > a";
+                    console.log(`discount percent: ${gameData[i]["DiscountPerc"]}`);
+                    if (gameData[i]["DiscountPerc"] != "0%" && gameData[i]["DiscountPerc"].includes("%")) {
+                        await page.click(selector);
+                        await page.waitForNavigation();
+                        await sleep.setTimeout(1000);
+                        discountedArr[i] = await page.evaluate(() => {
+                            return document.querySelectorAll("span.psw-c-t-2")[1]?.textContent.substring(11) ?? "none";
+                        });
+                        await sleep.setTimeout(1000);
+                        await page.goBack();
+                        await sleep.setTimeout(2000);
+                    } else {
+                        discountedArr[i] = null;
+                    }
+                }
+                await sleep.setTimeout(1500);
+
+                if (gameData.length > 1) {
+                    for (let x = a + b, y = 0; y < gameData.length; b++,x++,y++) {
+                        let title, origPrice, discPrice, discPerc, endDate;
+                        title = gameData[y]["Title"]; origPrice = gameData[y]["OriginalPrice"];
+                        discPrice = gameData[y]["DiscountPrice"]; endDate = discountedArr[y];
+                        if (!gameData[y]["DiscountPerc"].includes("%")) {
+                            discPerc = null;
+                        } else {
+                            discPerc = gameData[y]["DiscountPerc"];
+                        }
+                        data[x] = {
+                            "Title": title,
+                            "OriginalPrice": origPrice,
+                            "DiscountPrice": discPrice,
+                            "DiscountPerc": discPerc,
+                            "EndDate": endDate
+                        }
+                    }
+                } else {
+                    let title, origPrice, discPrice, discPerc, endDate;
+                    title = gameData[0]["Title"]; origPrice = GetPriceFromString(gameData[0]["OriginalPrice"]);
+                    discPrice = GetPriceFromString(gameData[0]["DiscountPrice"]); endDate = discountedArr[0];
+                    if (!gameData[0]["DiscountPerc"].includes("%")) {
+                        discPerc = null;
+                    } else {
+                        discPerc = gameData[0]["DiscountPerc"];
+                    }
+                    data[0] = {
+                        "Title": title,
+                        "OriginalPrice": origPrice,
+                        "DiscountPrice": discPrice,
+                        "DiscountPerc": discPerc,
+                        "EndDate": endDate
+                    }
+                }
+            } else data[a+b] = null;
         }
-        let data = {
-            "Result 1": {"Title": titles[0], "Price": prices[0]},
-            "Result 2": {"Title": titles[1], "Price": prices[1]},
-            "Result 3": {"Title": titles[2], "Price": prices[2]},
-            "Result 4": {"Title": titles[3], "Price": prices[3]},
-            "Result 5": {"Title": titles[4], "Price": prices[4]},
-            "Result 6": {"Title": titles[5], "Price": prices[5]}
-        };
-        
-        return data;
-    });
-    console.log(data);
-    await page.screenshot({path: "./PlayStation.png"});
+    } else {
+        if (isValidGameTitle(gameTitles)) {
+            await page.click(".shared-nav-search");
+            await page.type(".search-text-box__input", gameTitles, {delay: 200});
+            await page.keyboard.press("Enter");
+
+            await sleep.setTimeout(1000);
+
+            let gameData = await page.evaluate(() => {
+                let elements = document.querySelector("ul.psw-grid-list").querySelectorAll("li");
+                let data = [];
+                elements.forEach((e) => {
+                    data.push({
+                        "Title": e.querySelector("div > div > a > span > span").textContent,
+                        "OriginalPrice": e.querySelector("div > div > div.psw-price > div > span + span + s")?.textContent ?? e.querySelector("div > div > div.psw-price > div > span")?.textContent ?? e.querySelector("div > div > div.psw-price > span")?.textContent ?? "0",
+                        "DiscountPrice": e.querySelector("div > div > div.psw-price > div > span")?.textContent ?? e.querySelector("div > div > div.psw-price > span")?.textContent ?? "0",
+                        "DiscountPerc": e.querySelector("div > div > a + div + span + div > span")?.textContent ?? "0%"
+                    });
+                });
+                return data;
+            });
+
+            await sleep.setTimeout(3000);
+            let discountedArr = [];
+            for (let i = 0; i < gameData.length; i++) {
+                let test = "";
+                for (let j = 0; j < i; j++) {
+                    test += " + li";
+                }
+                console.log(test);
+                let selector = "ul.psw-grid-list > li";
+                for (let j = 0; j < i; j++) {
+                    selector += " + li";
+                }
+                selector += " > div > div > a";
+                console.log(`discount percent: ${gameData[i]["DiscountPerc"]}`);
+                if (gameData[i]["DiscountPerc"] != "0%" && gameData[i]["DiscountPerc"].includes("%")) {
+                    await page.click(selector);
+                    await page.waitForNavigation();
+                    await sleep.setTimeout(1000);
+                    discountedArr[i] = await page.evaluate(() => {
+                        return document.querySelectorAll("span.psw-c-t-2")[1]?.textContent.substring(11) ?? "none";
+                    });
+                    await sleep.setTimeout(1000);
+                    await page.goBack();
+                    await sleep.setTimeout(2000);
+                } else {
+                    discountedArr[i] = null;
+                }
+            }
+            await sleep.setTimeout(1500);
+            for (let i = 0; i < gameData.length; i++) {
+                let title, origPrice, discPrice, discPerc, endDate;
+                title = gameData[i]["Title"]; origPrice = GetPriceFromString(gameData[i]["OriginalPrice"]);
+                discPrice = GetPriceFromString(gameData[i]["DiscountPrice"]); endDate = discountedArr[i];
+                if (!gameData[i]["DiscountPerc"].includes("%")) {
+                    discPerc = null;
+                } else {
+                    discPerc = gameData[i]["DiscountPerc"];
+                }
+                data[i] = {
+                    "Title": title,
+                    "OriginalPrice": origPrice,
+                    "DiscountPrice": discPrice,
+                    "DiscountPerc": discPerc,
+                    "EndDate": endDate
+                }
+            }
+        } else data[0] = null;
+    }
     await browser.close();
     return data;
 }
 
-// getPlayStation("God Of War");
-
-async function GetNintendo(gameTitle) {
-    if (isValidGameTitle(gameTitle));
-    else return;
+async function GetNintendo(gameTitles, titleCount = 1) {
     const browser = await puppeteer.launch({headless: false, args: [`--window-size=1280,720`], defaultViewport: {width: 1280, height: 720}})
     const page = await browser.newPage();
-
     await page.goto("https://www.nintendo.com/us/store/games/");
 
-    // await page.waitForSelector(".K5to0.sc-iz67m1-3.dvnNEf");
-    // await page.click(".K5to0.sc-iz67m1-3.dvnNEf");
-    await page.waitForSelector("#search");
-    await page.click("#search");
+    let data = [];
+    if (titleCount > 1) {
+        for (let i = 0; i < titleCount; i++) {
+            if (isValidGameTitle(gameTitles[i])) {
 
-    await page.waitForSelector(".sc-ax1lsj-1.fvPwkD.sc-1r59ztq-5.fmtMqf");
-    await page.type(".sc-ax1lsj-1.fvPwkD.sc-1r59ztq-5.fmtMqf", gameTitle, {delay: 200});
-    await page.keyboard.press("Enter");
+                await page.waitForSelector("#search");
+                await page.click("#search");
 
-    await page.waitForSelector(".W990N.SH2al");
-    await page.waitForSelector(".s954l.qIo1e._39p7O.bC4e6");
-    await page.waitForNetworkIdle({idleTime: 500});
-    const data = await page.evaluate(() => {
-        let prices = [];
-        let titles = [];
+                await page.waitForSelector(".sc-ax1lsj-1.fvPwkD.sc-1r59ztq-5.fmtMqf");
+                await sleep.setTimeout(1000);
+                await page.type(".sc-ax1lsj-1.fvPwkD.sc-1r59ztq-5.fmtMqf", gameTitles[i], {delay: 200});
+                await page.keyboard.press("Enter");
 
-        const priceElements = document.querySelectorAll(".W990N.SH2al");
-        const titleElements = document.querySelectorAll(".s954l.qIo1e._39p7O.bC4e6");
-        for (let i = 0; i < 4; i++) {
-            prices.push(parseFloat(priceElements[i].innerText.substring(16)));
-            titles.push(titleElements[i].innerText);
+                await page.waitForSelector(".W990N.SH2al");
+                await page.waitForSelector(".s954l.qIo1e._39p7O.bC4e6");
+                await sleep.setTimeout(1000);
+
+                try {
+                    await page.click("section > div > div > div > h2 + a");
+                } catch (e) {
+                    console.log("Already on the search results page, not clicking on the 'See All' button");
+                }
+                
+                await sleep.setTimeout(1000);
+                let gameData = await page.evaluate(() => {
+                    let data = [];
+                    let list = document.querySelectorAll("div.HRRF1.Duonm");
+
+                    list.forEach(e => {
+                        data.push({
+                            "Title": e.querySelector("div > h3")?.innerText ?? "err",
+                            "OriginalPrice": e.querySelector("div + div + div > div > div > span")?.innerText.substring(16) ?? "0",
+                            "DiscountPrice": e.querySelector("div + div + div > div > div > div > div > div")?.innerText.substring(16) ?? e.querySelector("div + div + div > div > div > span")?.innerText.substring(16) ?? "0",
+                            "DiscountPerc": e.querySelector("div + div + div > div > div > div + span + div")?.innerText ?? "0%",
+                            "EndDate": e.querySelector("div + div")?.innerText ?? null
+                        });
+                    });
+
+                    return data;
+                });
+                await sleep.setTimeout(1500);
+                gameData.forEach(i => {
+                    let endDate = i["EndDate"].substring(11);
+                    if (i["EndDate"] == "Free download") endDate = "";
+                    data.push({
+                        "Title": i["Title"],
+                        "OriginalPrice": GetPriceFromString(i["OriginalPrice"]),
+                        "DiscountPrice": GetPriceFromString(i["DiscountPrice"]),
+                        "DiscountPerc": i["DiscountPerc"],
+                        "EndDate": endDate
+                    });
+                });
+            } else data.push(null);
         }
+    } else {
+        if (isValidGameTitle(gameTitles)) {
 
-        return {
-            "Result 1": {"Title": titles[0], "Price": prices[0]},
-            "Result 2": {"Title": titles[1], "Price": prices[1]},
-            "Result 3": {"Title": titles[2], "Price": prices[2]},
-            "Result 4": {"Title": titles[3], "Price": prices[3]}
-        }
-    });
-    console.log(data);
+            await page.waitForSelector("#search");
+            await page.click("#search");
+
+            await page.waitForSelector(".sc-ax1lsj-1.fvPwkD.sc-1r59ztq-5.fmtMqf");
+            await sleep.setTimeout(1000);
+            await page.type(".sc-ax1lsj-1.fvPwkD.sc-1r59ztq-5.fmtMqf", gameTitles, {delay: 200});
+            await page.keyboard.press("Enter");
+
+            await page.waitForSelector(".W990N.SH2al");
+            await page.waitForSelector(".s954l.qIo1e._39p7O.bC4e6");
+            await sleep.setTimeout(1000);
+
+            await page.click("section > div > div > div > h2 + a");
+            await sleep.setTimeout(1000);
+            let gameData = await page.evaluate(() => {
+                let data = [];
+                let list = document.querySelectorAll("div.HRRF1.Duonm");
+
+                list.forEach(e => {
+                    data.push({
+                        "Title": e.querySelector("div > h3")?.innerText ?? "err",
+                        "OriginalPrice": e.querySelector("div + div + div > div > div > span")?.innerText.substring(16) ?? "0",
+                        "DiscountPrice": e.querySelector("div + div + div > div > div > div > div > div")?.innerText.substring(16) ?? e.querySelector("div + div + div > div > div > span")?.innerText.substring(16) ?? "0",
+                        "DiscountPerc": e.querySelector("div + div + div > div > div > div + span + div")?.innerText ?? "0%",
+                        "EndDate": e.querySelector("div + div")?.innerText ?? null
+                    });
+                });
+
+                return data;
+            });
+            await sleep.setTimeout(1500);
+            gameData.forEach(i => {
+                let endDate = i["EndDate"].substring(11);
+                if (i["EndDate"] == "Free download") endDate = "";
+                data.push({
+                    "Title": i["Title"],
+                    "OriginalPrice": GetPriceFromString(i["OriginalPrice"]),
+                    "DiscountPrice": GetPriceFromString(i["DiscountPrice"]),
+                    "DiscountPerc": i["DiscountPerc"],
+                    "EndDate": endDate
+                });
+            });
+        } else data[0] = null;
+    }
     await browser.close();
     return data;
 }
-
-// GetNintendo("Mario Kart 8");
 
 // ----------   TESTS   ----------
 
@@ -566,40 +757,24 @@ async function TestXbox() {
     let results = await GetXbox(gameTitles, gameTitles.length);
     console.log(results);
 }
-TestXbox();
+// TestXbox();
 
 // Test PlayStation
 async function TestPlayStation() {
     let gameTitles = ["Ghost of Tsushima", "God of War", "Astro Bot"];
     let realPrices = [89.99, 19.99, 79.99];
     // First tests price of Ghost of Tsushima (89.99), God of War 2018 (19.99), and ASTRO BOT (79.99)
-    for (let i = 0; i < gameTitles.length; i++) {
-        let results = await GetPlayStation(gameTitles[i]);
-        let success = false;
-        for (let j = 1; j <= 6; j++) {
-            if (results != null && results != undefined);
-            else continue;
-            if (realPrices.includes(results[`Result ${j}`]["Price"])) success = true;
-        }
-        console.log(`Game price ${realPrices[i]} exists in search: ${success}`);
-    }
+    let results = await GetPlayStation(gameTitles, gameTitles.length);
+    console.log(results);
 }
 // TestPlayStation();
 
 // Test Nintendo
 async function TestNintendo() {
-    let gameTitles = ["Mariokart 8", "Super Mario Party Jamboree", "Kirby and the Forgotten Land"];
+    let gameTitles = ["Mariokart 8", "Super Mario Party Jamboree", "Kirby and the Forgotten Land", "Paper Mario"];
     let realPrices = [24.99, 59.99, 59.99];
     // First tests price of Mario Kart 8 Deluxe (24.99), Mario Party Jamboree (59.99), and Kirby the Forgotten Land (59.99)
-    for (let i = 0; i < gameTitles.length; i++) {
-        let results = await GetNintendo(gameTitles[i]);
-        let success = false;
-        for (let j = 1; j <= 4; j++) {
-            if (results != null && results != undefined);
-            else continue;
-            if (realPrices.includes(results[`Result ${j}`]["Price"])) success = true;
-        }
-        console.log(`Game price ${realPrices[i]} exists in search: ${success}`);
-    }
+    let results = await GetNintendo(gameTitles, gameTitles.length);
+    console.log(results);
 }
 // TestNintendo();
