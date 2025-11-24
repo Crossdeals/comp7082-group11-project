@@ -24,7 +24,16 @@ const isWishlisted = async function(username,gameList) {
 }
 
 router.get("", async (req, res) => {
-    const games = await VideoGame.find({}).limit(10).populate("deals.storefront").lean();
+    let games;
+    if(req.username) {
+        const user = await User.findByUserName(req.username);
+        const userWish = await Wishlist.findById(user.wishlist);
+
+        games = await VideoGame.find({ "deals.storefront": { $in: userWish.preferredStores } }).populate("deals.storefront").lean();
+    }
+    else {
+        games = await VideoGame.find({}).limit(10).populate("deals.storefront").lean();
+    }
 
     await isWishlisted(req.username, games);
     
@@ -51,10 +60,20 @@ router.get("/search", async (req, res) => {
 router.get("/featured", async (req, res) => {
     let games;
     try {
-        games = await VideoGame.aggregate([{ $sample: { size: 1 }}]);
+        if(req.username) {
+            const user = await User.findByUserName(req.username);
+            const userWish = await Wishlist.findById(user.wishlist);
+            games = await VideoGame.aggregate([
+                { $match: { "deals.storefront": { $in: userWish.preferredStores}}},
+                { $sample: { size: 1 }}]);
+        }
+        else {
+            games = await VideoGame.aggregate([{ $sample: { size: 1 }}]);
+        }
     } catch(err) {
         res.status(500);
         res.json({ message: "Server error" });
+        return;
     }
 
     if(games.length === 0) {
