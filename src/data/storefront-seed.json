@@ -1,12 +1,27 @@
 [
     {
-        "url": "www.sonystore.com",
-        "name": "Sony Store",
-        "platforms": ["ps5"]
+        "url": "https://store.steampowered.com/",
+        "name": "Steam",
+        "platforms": ["PC"]
     },
     {
-        "url": "www.xbox.com",
+        "url": "https://store.epicgames.com/en-US/p/",
+        "name": "Epic Games Store",
+        "platforms": ["PC"]
+    },
+    {
+        "url": "https://www.xbox.com/en-CA/",
         "name": "Xbox Store",
-        "platforms": ["xbox series x|s"]
+        "platforms": ["Xbox Series X|S"]
+    },
+    {
+        "url": "https://store.playstation.com/en-ca/",
+        "name": "Sony PlayStation Store",
+        "platforms": ["PS5"]
+    },
+    {
+        "url": "https://www.nintendo.com/us/store/games/",
+        "name": "Nintendo Store",
+        "platforms": ["Switch"]
     }
 ]
