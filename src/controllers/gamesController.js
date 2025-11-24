@@ -16,6 +16,7 @@ const isWishlisted = async function(username,gameList) {
     const user = await User.findByUserName(username);
     const userList = await Wishlist.findById(user.wishlist);
     for(let i = 0; i < gameList.length; i++) {
+        gameList[i].isWishlisted = false;
         if(userList.games.includes(gameList[i]._id)) {
             gameList[i].isWishlisted = true;
         }
@@ -23,7 +24,7 @@ const isWishlisted = async function(username,gameList) {
 }
 
 router.get("", async (req, res) => {
-    const games = await VideoGame.find({}).populate("deals.storefront").lean();
+    const games = await VideoGame.find({}).limit(10).populate("deals.storefront").lean();
 
     await isWishlisted(req.username, games);
     
