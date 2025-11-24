@@ -59,7 +59,7 @@ describe("VideoGame Model Unit Tests", () => {
 
     it("should add valid DealInfo to VideoGame", async() =>{
         const testDealInfo = createDealInfo();
-        testDealInfo.storefront = new mongoose.Types.ObjectId();
+        testDealInfo.storefront = "storeId";
         const testGame = await VideoGame.createGameFromTitle(testTitle);
         testGame.deals.push(testDealInfo);
         await testGame.validate();

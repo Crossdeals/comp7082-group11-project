@@ -8,13 +8,14 @@ describe("Storefront Model Unit Tests", () => {
         await Storefront.deleteMany({});
     });
 
+    const testId = "test";
     const testUrl = "test"
     const testName = "test";
     const testPlatforms = ["test"];
 
 
-    const createTestStorefront = async (url = testUrl, name = testName, platforms = testPlatforms ) => {
-        return Storefront.create({ url: url, name: name, platforms: platforms });
+    const createTestStorefront = async (id = testId, url = testUrl, name = testName, platforms = testPlatforms ) => {
+        return Storefront.create({ _id: id, url: url, name: name, platforms: platforms });
     };
 
     it("should create and save Storefront", async () =>{
@@ -26,7 +27,7 @@ describe("Storefront Model Unit Tests", () => {
         expect(testStore.name).to.equal(testName, "Storefront name not expected value");
     });
 
-    it("should fail to create Storefront if url is empty", async () =>{ 
+    it("should fail to create Storefront if id is empty", async () =>{ 
         let error;
         try {
             await createTestStorefront("");
@@ -39,10 +40,23 @@ describe("Storefront Model Unit Tests", () => {
         expect(count).is.equal(0, "Storefront collection should be empty");
     });
 
+    it("should fail to create Storefront if url is empty", async () =>{ 
+        let error;
+        try {
+            await createTestStorefront(testId, "");
+        }
+        catch(e) {
+            error = e;
+        }
+        expect(error).instanceOf(mongoose.Error.ValidationError, "Mongoose validation error expected");
+        const count = await Storefront.collection.countDocuments();
+        expect(count).is.equal(0, "Storefront collection should be empty");
+    });
+
     it("should fail to create Storefront if name is empty", async () =>{ 
         let error;
         try {
-            await createTestStorefront(testUrl, "");
+            await createTestStorefront(testId, testUrl, "");
         }
         catch(e) {
             error = e;
@@ -55,7 +69,7 @@ describe("Storefront Model Unit Tests", () => {
     it("should fail to create Storefront if platforms is empty", async () =>{ 
         let error;
         try {
-            await createTestStorefront(testUrl, testName, []);
+            await createTestStorefront(testId, testUrl, testName, []);
         }
         catch(e) {
             error = e;
