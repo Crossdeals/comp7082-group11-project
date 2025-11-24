@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const DealInfoModelSchema = new Schema({
-    storefront: { type: Schema.Types.ObjectId, ref: 'Storefront', required: true },
+    storefront: { type: String, ref: 'Storefront', required: true },
     originalPrice: { type: Schema.Types.Double, required: true },
     currentPrice: { type: Schema.Types.Double, required: true },
     bestPrice: { type: Schema.Types.Double },

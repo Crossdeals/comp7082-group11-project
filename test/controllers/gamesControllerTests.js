@@ -27,7 +27,7 @@ describe("Games Controller Tests", function() {
     };
 
     beforeEach(async () => {
-        const testStore = await Storefront.create({ url: "testUrl", name: "test", platforms: ["test"] });
+        const testStore = await Storefront.create({ _id: "testId", url: "testUrl", name: "test", platforms: ["test"] });
         testGameOneId = await createTestGame(testGameOne, 50, 25, testStore._id);
         testGameTwoId = await createTestGame(testGameTwo, 40, 20, testStore._id);
     });

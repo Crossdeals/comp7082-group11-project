@@ -28,7 +28,7 @@ describe("Wishlist Controller Tests", function() {
     before(async () => {
         testGame = await VideoGame.createGameFromTitle(testName);
         testGameId = testGame._id;
-        const testStore = await Storefront.create({ url: "testUrl", name: testName, platforms: [testName] });
+        const testStore = await Storefront.create({ _id: "testId", url: "testUrl", name: testName, platforms: [testName] });
         testStoreId = testStore._id;
     });
 
