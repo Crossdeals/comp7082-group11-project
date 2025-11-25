@@ -6,7 +6,7 @@ const Schema = mongoose.Schema;
 
 const WishlistModelSchema = new Schema({
     preferredStores: { type: [String], ref: 'Storefront'},
-    games: { type: [String], ref: 'VideoGame' }
+    games: { type: [Schema.Types.ObjectId], ref: 'VideoGame' }
 });
 
 const Wishlist = mongoose.model('Wishlist', WishlistModelSchema);
