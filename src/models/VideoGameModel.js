@@ -12,6 +12,9 @@ const DealInfoModelSchema = new Schema({
 
 const VideoGameModelSchema = new Schema({
     title: { type: String, required: true, unique: true },
+    publisher: {type: String },
+    year: { type: Number },
+    description: { type: String },
     deals: { type: [DealInfoModelSchema] }
 });
 
