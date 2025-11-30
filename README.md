@@ -22,3 +22,7 @@ Run `git submodule update --init` to initialize the frontend submodule.
 ## Pull new changes from frontend
 
 Run `git submodule update --remote` from the main project to pull new changes from the submodule repo.
+
+## Dockerhub link
+
+https://hub.docker.com/r/jeffreychou1991/crossdeals/tags
