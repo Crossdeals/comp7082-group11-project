@@ -12,6 +12,9 @@ RUN npm install
 
 # Copy the rest of the application code
 COPY . .
+ENV PORT=8000
+ENV DATABASE_URL="mongodb://mongodb:27017/crossdeals"
+ENV SECRET_KEY="secret"
 
 # Expose the port your Express app listens on
 EXPOSE 8000
