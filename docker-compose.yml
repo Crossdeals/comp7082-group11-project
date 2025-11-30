@@ -1,7 +1,6 @@
 services:
   web:
     build: .
-    image: jeffreychou1991/crossdeals:latest
     ports:
       - "8000:8000"
     depends_on:

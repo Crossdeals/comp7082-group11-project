@@ -20,8 +20,9 @@
               username: ${{ secrets.DOCKERHUB_USERNAME }}
               password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-          - name: Build Docker Compose images
-            run: docker compose build
-
-          - name: Push Docker Compose images to Docker Hub
-            run: docker compose push
+          - name: Build and push web image
+            uses: docker/build-push-action@v5
+            with:
+              context: ./
+              push: true
+              tags: jeffreychou1991/crossdeals:latest
