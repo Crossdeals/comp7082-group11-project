@@ -1,8 +1,6 @@
-name: Build and Push Docker Compose Images
+name: Build and Push Docker Compose Images for pull requests
 
 on:
-  push:
-    branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
 
@@ -29,4 +27,4 @@ jobs:
         with:
           context: .
           push: true
-          tags: jeffreychou1991/crossdeals:latest
+          tags: jeffreychou1991/crossdeals:pr
