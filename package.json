@@ -4,6 +4,7 @@
   "description": "Intro to Software Engineering Project",
   "main": "index.js",
   "scripts": {
+    "start": "node ./src/server.js",
     "test": "mocha --config ./test/.mocharc.json"
   },
   "repository": {
