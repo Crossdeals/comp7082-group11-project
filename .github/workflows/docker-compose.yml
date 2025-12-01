@@ -26,3 +26,7 @@
               context: ./
               push: true
               tags: jeffreychou1991/crossdeals:latest
+              env:
+                PORT: 8000
+                DATABASE_URL: ${{ secrets.DATABASE_URL }}
+                SECRET_KEY: ${{ secrets.SECRET_KEY }}
