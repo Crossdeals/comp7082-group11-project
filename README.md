@@ -26,3 +26,5 @@ Run `git submodule update --remote` from the main project to pull new changes fr
 ## Dockerhub link
 
 https://hub.docker.com/r/jeffreychou1991/crossdeals/tags
+
+Run `docker compose up` with the docker-compose.yml in the same directory to run the latest build
