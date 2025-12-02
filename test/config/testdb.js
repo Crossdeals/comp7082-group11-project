@@ -1,6 +1,8 @@
 const mongoose = require("mongoose");
 const { MongoMemoryServer } = require("mongodb-memory-server");
 
+// Test database config file to set up in memory database
+
 let mongoServer;
 
 exports.connectTestDB = async () => {

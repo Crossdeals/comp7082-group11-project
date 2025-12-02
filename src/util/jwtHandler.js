@@ -1,6 +1,8 @@
 const jwt = require('jsonwebtoken');
 
+// Utility functions to handle jwt authentication
 
+// Generates a jwt token for the user
 exports.getToken = function (username) {
     const secretKey = process.env.SECRET_KEY;
     const token = jwt.sign(
@@ -12,6 +14,7 @@ exports.getToken = function (username) {
     return token;
 }
 
+// Verifies whether a jwt token is valid
 exports.verifyToken = function (token) {
     const secretKey = process.env.SECRET_KEY;
 
@@ -30,6 +33,7 @@ exports.verifyToken = function (token) {
     }
 }
 
+// Middleware to ensure only authenticated users can continue with the request
 exports.authenticateUser = (req, res, next) =>{
     let token = req.cookies.token;
     const verified = this.verifyToken(token);
@@ -44,6 +48,7 @@ exports.authenticateUser = (req, res, next) =>{
     }
 }
 
+// Middleware to check if request is from an authenticated user but does not block access to content
 exports.checkForToken = (req, res, next) => {
     let token = req.cookies.token;
     const verified = this.verifyToken(token);

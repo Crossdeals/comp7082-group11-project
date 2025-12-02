@@ -6,8 +6,12 @@ const jwt = require('../util/jwtHandler');
 const User = require('../models/UserModel');
 const Wishlist = require('../models/WishlistModel');
 
+// Controller for serving deal info to users of Crossdeal
+
+// Uses checkForToken validation for all routes in gamesController
 router.use(jwt.checkForToken);
 
+// Checks how many games in a list are already wishlisted by a user
 const isWishlisted = async function(username,gameList) {
     if(!username) {
         return;
@@ -23,6 +27,7 @@ const isWishlisted = async function(username,gameList) {
     }
 }
 
+// Gets a list of game deal data stored currently
 router.get("", async (req, res) => {
     let games;
     if(req.username) {
@@ -41,6 +46,7 @@ router.get("", async (req, res) => {
     res.json(games);
 });
 
+// Gets the full deal data of the video game titled gamename
 router.get("/search", async (req, res) => {
     const gameTitle = req.query.title;
     const games = await VideoGame.find({ title: { $regex: gameTitle, $options: "i" }})
@@ -57,6 +63,7 @@ router.get("/search", async (req, res) => {
     res.json(games);
 });
 
+// Gets the full deal data of the featured video game, which is a random game
 router.get("/featured", async (req, res) => {
     let games;
     try {
@@ -90,6 +97,7 @@ router.get("/featured", async (req, res) => {
     res.json(games[0]);
 });
 
+// Gets the full deal data of the video game with the id gameid
 router.get("/:id", async (req, res) => {
     const gameId = req.params.id;
     const validId = mongoose.Types.ObjectId.isValid(gameId);

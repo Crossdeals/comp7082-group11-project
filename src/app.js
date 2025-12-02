@@ -9,6 +9,8 @@ const cors = require('cors');
 
 require('dotenv').config();
 
+// Setup file for the Crossdeals backend
+
 app.use(cookieParser());
 
 const corsOptions = {

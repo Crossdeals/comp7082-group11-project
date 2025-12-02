@@ -3,6 +3,8 @@ const User = require('../models/UserModel');
 const VideoGame = require('../models/VideoGameModel');
 const Wishlist = require('../models/WishlistModel');
 
+// Seed the User collection with dummy data. Each user adds a random amount of games to their wishlist to make the data more realistic
+
 const maxTestUsers = 10;
 const testPrefix = "test";
 

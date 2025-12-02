@@ -5,8 +5,9 @@ const UserSeeder = require('./userSeeder');
 const VideoGameSeeder = require('./videoGameSeeder');
 const Storefront = require('../models/StorefrontModel');
 
-
 require('dotenv').config();
+
+// Utility function to invoke all of the collection data seeders
 
 const seedData = async () => {
     try {

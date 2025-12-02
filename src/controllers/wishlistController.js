@@ -7,8 +7,12 @@ const Wishlist = require('../models/WishlistModel');
 const VideoGame = require('../models/VideoGameModel');
 const mongoose = require("mongoose");
 
+// Controller for serving and updating data stored in the user's wishlist
+
+// Uses authenicateUser validation for all routes in wishlistController
 router.use(jwt.authenticateUser);
 
+// Gets the wishlist of the logged in user which includes deal information of games in the wishlist﻿
 router.get("/index", async (req, res) => {
     const userData = await User.findByUserName(req.username).populate({
         path: 'wishlist',
@@ -25,6 +29,7 @@ router.get("/index", async (req, res) => {
     res.json(userData.wishlist.games);
 });
 
+// Removes a game from a user's wishlist using the game id of the title that is stored by Crossdeals
 router.delete("/remove/:id", async (req, res) => {
     const gameId = req.params.id;
     const validId = mongoose.Types.ObjectId.isValid(gameId);
@@ -52,6 +57,7 @@ router.delete("/remove/:id", async (req, res) => {
     }
 });
 
+// Adds a game to user's wishlist by title﻿
 router.post("/add", async (req,res) => {
     const title = req.body.title;
     const user = await User.findByUserName(req.username);
@@ -84,6 +90,7 @@ router.post("/add", async (req,res) => {
     }
 });
 
+// Gets the user's preferred storefronts as a  list of store ids
 router.get("/storefront", async (req, res) => {
     const user = await User.findByUserName(req.username);
     const wishlist = await Wishlist.findById(user.wishlist).lean();
@@ -91,13 +98,14 @@ router.get("/storefront", async (req, res) => {
     res.json(wishlist.preferredStores);
 });
 
-// frontend should send storefronts as array of object ids
+// Updates the user's preferred storefronts using a list of store ids
 router.patch("/storefront", async (req, res) => {
     const preferredStoresChanges = req.body.stores;
     const user = await User.findByUserName(req.username);
     const wishlist = await Wishlist.findById(user.wishlist);
     const newStores = [];
 
+    // validates the store ids sent by the user to Storefront collection
     for(let i = 0; i < preferredStoresChanges.length; i++) {
         const inStorefront = await Storefront.findById(preferredStoresChanges[i]);
         if(inStorefront) {
