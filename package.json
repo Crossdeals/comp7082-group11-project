@@ -4,7 +4,6 @@
   "description": "Intro to Software Engineering Project",
   "main": "index.js",
   "scripts": {
-    "test": "jest"
   },
   "repository": {
     "type": "git",
