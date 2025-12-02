@@ -1,32 +1,32 @@
 const express = require('express');
 const app = express();
-const connectDB = require('./config/db');
 const accountController = require('./controllers/accountController');
 const wishlistController = require('./controllers/wishlistController');
+const gamesController = require('./controllers/gamesController');
 const bodyParser = require('body-parser');
 const cookieParser = require("cookie-parser");
-const StorefrontSeeder = require('./util/storefrontSeeder');
+const cors = require('cors');
 
 require('dotenv').config();
-connectDB();
-StorefrontSeeder();
+
+// Setup file for the Crossdeals backend
+
 app.use(cookieParser());
 
-const allowHeaders = (req, res, next) => {
-    // If hosted, set the origin to the FE address.
-    res.header('Access-Control-Allow-Origin', `null`);
-    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
-    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-    res.header('Access-Control-Allow-Credentials', 'true');
-    next();
+const corsOptions = {
+    origin: 'null',
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true
 }
 
-app.use(allowHeaders);
+app.use(cors(corsOptions));
 
 app.use(express.json());
 app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: true }));
 app.use("/", accountController);
 app.use("/wishlist", wishlistController);
+app.use("/games", gamesController);
 
 module.exports = app;

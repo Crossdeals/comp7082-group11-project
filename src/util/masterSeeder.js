@@ -3,13 +3,16 @@ const mongoose = require('mongoose');
 const StorefrontSeeder = require('./storefrontSeeder');
 const UserSeeder = require('./userSeeder');
 const VideoGameSeeder = require('./videoGameSeeder');
-
+const Storefront = require('../models/StorefrontModel');
 
 require('dotenv').config();
+
+// Utility function to invoke all of the collection data seeders
 
 const seedData = async () => {
     try {
         await connectDB();
+        await Storefront.deleteMany({});
         await StorefrontSeeder();
         await VideoGameSeeder();
         await UserSeeder();

@@ -1,0 +1,22 @@
+services:
+  web:
+    build: .
+    image: jeffreychou1991/crossdeals:latest
+    ports:
+      - "8000:8000"
+    depends_on:
+      - mongodb
+    environment:
+      # This environment variable tells your app how to connect to the 'mongodb' service
+      PORT: 8000
+      DATABASE_URL: mongodb://mongodb:27017/crossdeals
+      SECRET_KEY: "secret"
+  mongodb:
+    image: mongo:8.2
+    ports:
+      - "27017:27017"
+    volumes:
+      # Persist database data to a volume named 'mongodb_data'
+      - mongodb_data:/data/db
+volumes:
+  mongodb_data:
