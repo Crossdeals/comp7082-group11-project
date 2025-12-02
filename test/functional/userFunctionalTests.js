@@ -81,11 +81,12 @@ describe("New User Functional Tests", function() {
 
     it("should send game list with appropriate data on request, signup user on request, send wishlist on request, and update wishlist on request", async () => {
         let response;
+        const testGame = testGames[0];
         response = await request(app)
             .get("/games")
             .expect(200);
 
-        validateGamesResponse(response.body, 2, false)
+        validateGamesResponse(response.body, 2, false);
 
         const agent = request.agent(app);
         await agent
@@ -98,7 +99,7 @@ describe("New User Functional Tests", function() {
             .get("/wishlist/index")
             .expect(200);
 
-        validateWishlistResponse(response.body, 0)
+        validateWishlistResponse(response.body, 0);
 
         response = await agent
             .get("/games")
@@ -108,20 +109,36 @@ describe("New User Functional Tests", function() {
 
         response = await agent
             .post("/wishlist/add")
-            .send({ title: testGame1 })
+            .send({ title: testGame.title })
             .expect(200);
 
         response = await agent
             .get("/wishlist/index")
             .expect(200);
 
-        validateWishlistResponse(response.body, 1, testGame1);
+        validateWishlistResponse(response.body, 1, testGame.title);
 
         response = await agent
             .get("/games")
             .expect(200);
 
         validateGamesResponse(response.body, 2, true, true);
+
+        response = await agent
+            .delete("/wishlist/remove/" + testGame._id)
+            .expect(200);
+
+        response = await agent
+            .get("/wishlist/index")
+            .expect(200);
+
+        validateWishlistResponse(response.body, 0);
+
+        response = await agent
+            .get("/games")
+            .expect(200);
+
+        validateGamesResponse(response.body, 2, true, false);
     });
 
      it("should send preferred stores correctly after update and games sent should respect preferred stores", async () => {
@@ -180,7 +197,7 @@ describe("New User Functional Tests", function() {
             .get("/wishlist/index")
             .expect(200);
 
-        validateWishlistResponse(response.body, 0)
+        validateWishlistResponse(response.body, 0);
 
         response = await agent
             .post("/wishlist/add")
