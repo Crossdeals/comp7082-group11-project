@@ -5,7 +5,9 @@ const jwtHandler = require('../util/jwtHandler');
 const Wishlist = require('../models/WishlistModel');
 const Storefront = require('../models/StorefrontModel');
 
-// TODO: move Wishlist creation outside of account creation aftering asking for store preferences
+// Controller for user signup and login
+
+// Creates a new users wishlist and assigns the id to the user
 async function createWishList(user){
     try {
         const storeIds = await Storefront.distinct('_id');
@@ -16,7 +18,7 @@ async function createWishList(user){
     }
 }
 
-// User registration route
+// Sign up new and fail is user already exists or if data from fields are invalid
 router.post("/signup", async (req, res) => {
     const { username, password } = req.body;
     if (!username || !password) {
@@ -50,7 +52,7 @@ router.post("/signup", async (req, res) => {
     }
 });
 
-// TODO: Remove the body error message for security
+// Login an existing user and fail if user does not exist or data from fields is invalid
 router.post('/login', async (req, res) => {
     const username = req.body.username;
     const existingUser = await User.findOne({ userName: username });
@@ -82,6 +84,7 @@ router.post('/login', async (req, res) => {
     }
 });
 
+// Verifies if user with username is a valid user
 router.post('/username', function (req, res, next) {
     const username = req.body.username;
     let token = req.cookies.token; 
@@ -103,6 +106,7 @@ router.post('/username', function (req, res, next) {
     }
 });
 
+// Logout current user
 router.get('/logout', function (req, res, next) {
     res.cookie('token', '', {
         httpOnly: true,

@@ -1,6 +1,8 @@
 const Storefront = require('../models/StorefrontModel');
 const VideoGame = require('../models/VideoGameModel');
 
+// Seeds the Videogame collection with dummy data. Dealinfo storefronts, original price, and current price are randomized
+
 const gameInfo = [
     { title: "Minecraft", publisher: "Mojang Studios", year: 2011,
         description: "Minecraft is a sandbox game developed and published by Mojang Studios. Formally released on 18 November 2011 for personal computers following its initial public alpha release on 17 May 2009, it has been ported to numerous platforms, including mobile devices and various video game consoles."},

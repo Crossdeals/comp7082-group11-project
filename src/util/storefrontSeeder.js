@@ -3,6 +3,8 @@ const fs = require('fs');
 const path = require('path');
 const Storefront = require('../models/StorefrontModel');
 
+// Seed Storefront collection with data from the storefront-seed.json
+
 const seedStorefront = async () => {
     try {
         const filePath = path.join(__dirname, '..', 'data', 'storefront-seed.json');
