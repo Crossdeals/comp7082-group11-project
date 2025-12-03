@@ -723,3 +723,11 @@ async function GetNintendo(gameTitles, titleCount = 1) {
     await browser.close();
     return data;
 }
+
+module.exports = {
+    GetSteam,
+    GetEpic,
+    GetXbox,
+    GetPlayStation,
+    GetNintendo
+};
