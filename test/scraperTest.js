@@ -1,5 +1,5 @@
-const expect = import("chai");
-const scraper = import("./scraper.js");
+const expect = require("chai");
+const scraper = require("../Scraper Scripts/scraper.js");
 
 describe("Web scraper unit tests", async () => {
     // Test Steam getting a price from a paid game
