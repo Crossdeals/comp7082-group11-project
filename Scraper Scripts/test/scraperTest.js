@@ -1,4 +1,4 @@
-const expect = require("chai");
+const {expect} = require("chai");
 const scraper = require("../scraper.js");
 
 describe("Web scraper unit tests", async () => {

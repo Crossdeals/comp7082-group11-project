@@ -53,34 +53,38 @@ async function GetEpic(gameTitles, titleCount = 1) {
                 await sleep.setTimeout(500);
                 
                 // These 3 are used only for bypassing the age restriction on applicable games
-                await page.click('button#month_toggle');
-                let rand_1 = randomInt(1, 12);
-                let selectorString1 = 'ul#month_menu > li';
-                for (let j = 0; j < rand_1; j++) {
-                    selectorString1 += ' + li';
+                try {
+                    await page.click('button#month_toggle');
+                    let rand_1 = randomInt(1, 12);
+                    let selectorString1 = 'ul#month_menu > li';
+                    for (let j = 0; j < rand_1; j++) {
+                        selectorString1 += ' + li';
+                    }
+                    selectorString1 += ' > button';
+                    await page.click(selectorString1); await sleep.setTimeout(100);
+                    
+                    await page.click('button#day_toggle');
+                    let rand_2 = randomInt(1, 25);
+                    let selectorString2 = 'ul#day_menu > li';
+                    for (let j = 0; j < rand_2; j++) {
+                        selectorString2 += ' + li';
+                    }
+                    selectorString2 += ' > button';
+                    await page.click(selectorString2); await sleep.setTimeout(100);
+                    
+                    await page.click('button#year_toggle');
+                    let rand_3 = randomInt(20, 30);
+                    let selectorString3 = 'ul#year_menu > li';
+                    for (let j = 0; j < rand_3; j++) {
+                        selectorString3 += ' + li';
+                    }
+                    selectorString3 += ' > button';
+                    await page.click(selectorString3); await sleep.setTimeout(100);
+                    
+                    await page.click('button#btn_age_continue');
+                } catch (e) {
+                    console.log(e);
                 }
-                selectorString1 += ' > button';
-                await page.click(selectorString1); await sleep.setTimeout(100);
-                
-                await page.click('button#day_toggle');
-                let rand_2 = randomInt(1, 25);
-                let selectorString2 = 'ul#day_menu > li';
-                for (let j = 0; j < rand_2; j++) {
-                    selectorString2 += ' + li';
-                }
-                selectorString2 += ' > button';
-                await page.click(selectorString2); await sleep.setTimeout(100);
-                
-                await page.click('button#year_toggle');
-                let rand_3 = randomInt(20, 30);
-                let selectorString3 = 'ul#year_menu > li';
-                for (let j = 0; j < rand_3; j++) {
-                    selectorString3 += ' + li';
-                }
-                selectorString3 += ' > button';
-                await page.click(selectorString3); await sleep.setTimeout(100);
-                
-                await page.click('button#btn_age_continue');
 
                 await sleep.setTimeout(1000); // Waits for the age restriction page to disappear
 
@@ -183,34 +187,38 @@ async function GetEpic(gameTitles, titleCount = 1) {
             await sleep.setTimeout(500);
             
             // Like other loop, bypasses age restriction if applicable
-            await page.click('button#month_toggle');
-            let rand_1 = randomInt(1, 12);
-            let selectorString1 = 'ul#month_menu > li';
-            for (let j = 0; j < rand_1; j++) {
-                selectorString1 += ' + li';
+            try {
+                await page.click('button#month_toggle');
+                let rand_1 = randomInt(1, 12);
+                let selectorString1 = 'ul#month_menu > li';
+                for (let j = 0; j < rand_1; j++) {
+                    selectorString1 += ' + li';
+                }
+                selectorString1 += ' > button';
+                await page.click(selectorString1); await sleep.setTimeout(100);
+                
+                await page.click('button#day_toggle');
+                let rand_2 = randomInt(1, 25);
+                let selectorString2 = 'ul#day_menu > li';
+                for (let j = 0; j < rand_2; j++) {
+                    selectorString2 += ' + li';
+                }
+                selectorString2 += ' > button';
+                await page.click(selectorString2); await sleep.setTimeout(100);
+                
+                await page.click('button#year_toggle');
+                let rand_3 = randomInt(20, 30);
+                let selectorString3 = 'ul#year_menu > li';
+                for (let j = 0; j < rand_3; j++) {
+                    selectorString3 += ' + li';
+                }
+                selectorString3 += ' > button';
+                await page.click(selectorString3); await sleep.setTimeout(100);
+                
+                await page.click('button#btn_age_continue');
+            } catch (e) {
+                console.log(e);
             }
-            selectorString1 += ' > button';
-            await page.click(selectorString1); await sleep.setTimeout(100);
-            
-            await page.click('button#day_toggle');
-            let rand_2 = randomInt(1, 25);
-            let selectorString2 = 'ul#day_menu > li';
-            for (let j = 0; j < rand_2; j++) {
-                selectorString2 += ' + li';
-            }
-            selectorString2 += ' > button';
-            await page.click(selectorString2); await sleep.setTimeout(100);
-            
-            await page.click('button#year_toggle');
-            let rand_3 = randomInt(20, 30);
-            let selectorString3 = 'ul#year_menu > li';
-            for (let j = 0; j < rand_3; j++) {
-                selectorString3 += ' + li';
-            }
-            selectorString3 += ' > button';
-            await page.click(selectorString3); await sleep.setTimeout(100);
-            
-            await page.click('button#btn_age_continue');
 
             await sleep.setTimeout(1000);
 
