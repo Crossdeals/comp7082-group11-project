@@ -21,7 +21,7 @@ describe("Web scraper unit tests", async () => {
         expect(gameData).to.equal(!null);
         expect(gameData["Title"]).to.equal("Satisfactory");
         expect(gameData["OriginalPrice"]).to.equal(51.99);
-        expect(gameData["DiscountPrice"]).to.notEqual(null);
+        expect(gameData["DiscountPrice"]).to.not.equal(null);
         expect(gameData["DiscountPerc"]).to.notEqual(null);
         expect(gameData["EndDate"]).to.equal(null);
     });
