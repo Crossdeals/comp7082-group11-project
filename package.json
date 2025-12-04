@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/Crossdeals/comp7082-group11-project#readme",
   "dependencies": {
+    "axios": "^1.13.1",
     "bcrypt": "^6.0.0",
     "body-parser": "^2.2.0",
     "cookie-parser": "^1.4.7",
